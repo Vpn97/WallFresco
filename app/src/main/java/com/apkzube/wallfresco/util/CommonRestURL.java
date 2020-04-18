@@ -10,7 +10,7 @@ public class CommonRestURL {
 
     public  static  final String WALLPAPER__URL = "search";
     public  static  final String TRENDING__URL = "curated";
-    public  static  final String PHOTO = "photos";
+    public  static  final String PHOTO_URL = "photos";
 
     public static int SERVER_CALL_COUNT = 0;
 
