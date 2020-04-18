@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/bottom_menu_wallpaper">
+
+    <fragment
+        android:id="@+id/bottom_menu_wallpaper"
+        android:name="com.apkzube.wallfresco.ui.wallpaper.WallpaperFragment"
+        android:label="@string/wallpaper"
+        tools:layout="@layout/fragment_wallpaper" />
+
+    <fragment
+        android:id="@+id/bottom_menu_trend"
+        android:name="com.apkzube.wallfresco.ui.trending.TrendingFragment"
+        android:label="@string/trend"
+        tools:layout="@layout/fragment_trending" />
+
+    <fragment
+        android:id="@+id/bottom_menu_favorite"
+        android:name="com.apkzube.wallfresco.ui.favorite.FavoriteFragment"
+        android:label="@string/Favorite"
+        tools:layout="@layout/fragment_favorite" />
+</navigation>

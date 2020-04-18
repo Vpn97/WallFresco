@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">Wall Fresco</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+
+
+    <string name="share_image_text">*Download Now*</string>
+    <string name="user_data">user_data_storage</string>
+
+
+
+    <!--nav menus-->
+    <string name="nav_menu_stickers_app">Stickers App</string>
+    <string name="nav_menu_about_app">About App | Discalaimar</string>
+    <string name="nev_menu_contact_us">Contact Us</string>
+    <string name="favorite_list">favorite_list</string>
+    <string name="privacy_policy_path">file:///android_asset/wallpaper_privacy_policy.htm</string>
+    <string name="uri_opern_source">https://4kwallpaperzubedev.blogspot.com/2019/05/open-source.html</string>
+    <string name="uri_privacy_policy">https://4kwallpaperzubedev.blogspot.com/2019/05/4k-wallpaper-privacy-policy.html</string>
+    <string name="nav_share_app">Share this App</string>
+    <string name="nav_menu_rating_app">Rating Us</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="Favorite">Favorite</string>
+    <string name="trend">Trend</string>
+
+    <string name="catagory">Category</string>
+    <string name="original">Original</string>
+    <string name="medium">Medium</string>
+    <string name="large">4K FHD</string>
+    <string name="dailog_home">Home Screen</string>
+    <string name="lock_screen">Lock Screen</string>
+    <string name="both">Both</string>
+    <string name="wallpaper_set">Wallpaper set..!</string>
+    <string name="set_wallpaper_msg">Thank you, the best choice, your phone looks great.!!</string>
+    <string name="download_wallpaper_msg">Thank you for using our app (^_^)</string>
+    <string name="dismiss">DISMISS</string>
+    <string name="rate_us">RATE US</string>
+    <string name="thank_you">Thank You</string>
+    <string name="rating_message">Please help us out with 5 star rating - Your Playstore review makes a difference.</string>
+    <string name="open_photo">OPEN WALLPAPER</string>
+    <string name="wallpaper_downloaded">Wallpaper downloaded..!!</string>
+    <string name="no_way">NO WAY</string>
+    <string name="yes_i_have_love_to_do">Yes I\'D LOVE TO !</string>
+
+    <string-array name="wallpaper_category">
+        <item>Abstract</item>
+        <item>Animal</item>
+        <item>Birds</item>
+        <item>Anime</item>
+        <item>AMOLED</item>
+        <item>Art</item>
+        <item>Aircraft</item>
+        <item>Black</item>
+        <item>Love</item>
+        <item>Food</item>
+        <item>Flowers</item>
+        <item>Nature</item>
+        <item>Bikes</item>
+        <item>Snow</item>
+        <item>Sport</item>
+        <item>The Earth</item>
+        <item>Moon</item>
+        <item>Sky</item>
+        <item>Forest</item>
+        <item>Technology</item>
+        <item>Galaxies</item>
+        <item>Space</item>
+        <item>Vector</item>
+        <item>Quotes</item>
+        <item>Ocean</item>
+        <item>Textures</item>
+        <item>City</item>
+    </string-array>
+</resources>

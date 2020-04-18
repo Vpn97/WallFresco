@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+    android:id="@+id/bottom_menu_wallpaper"
+    android:enabled="true"
+    android:title="@string/wallpaper"
+    android:icon="@drawable/ic_wallpaper_black_24dp" />
+
+
+
+    <item
+        android:id="@+id/bottom_menu_trend"
+        android:enabled="true"
+        android:title="@string/trend"
+        android:icon="@drawable/ic_trending" />
+
+
+    <item
+        android:id="@+id/bottom_menu_favorite"
+        android:enabled="true"
+        android:title="@string/Favorite"
+        android:icon="@drawable/ic_favorite_border_black_24dp" />
+
+</menu>

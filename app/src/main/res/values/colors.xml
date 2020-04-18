@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorAccent">#E91E63</color>
+
+
+    <color name="advance_tutorial_circle_color">#005f98</color>
+
+
+    <color name="white">#FFFFFF</color>
+
+
+    <color name="blue_gray">#607D8B</color>
+    <color name="black">#000000</color>
+
+
+    <color name="btn_favorite_color">#F4511E</color>
+
+    <color name="btn_favorite_unchecked_color">#F4511E</color>
+</resources>
