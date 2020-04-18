@@ -4,32 +4,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.apkzube.wallfresco.R;
+import com.apkzube.wallfresco.databinding.FragmentWallpaperBinding;
 
 public class WallpaperFragment extends Fragment {
 
-    private WallpaperViewModel wallpaperViewModel;
+    private WallpaperViewModel model;
+    private View rootView;
+    private FragmentWallpaperBinding mBinding;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        wallpaperViewModel =
-                ViewModelProviders.of(this).get(WallpaperViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_wallpaper, container, false);
-        final TextView textView = root.findViewById(R.id.text_dashboard);
-        wallpaperViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_wallpaper, container, false);
+        mBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_wallpaper,container,false);
+
+        allocation();
+        setEvent();
+        return rootView;
+    }
+
+    private void allocation() {
+        model = ViewModelProviders.of(this).get(WallpaperViewModel.class);
+        mBinding.wallpaperFragmentLoading.playAnimation();
+
+    }
+
+    private void setEvent() {
+
     }
 }

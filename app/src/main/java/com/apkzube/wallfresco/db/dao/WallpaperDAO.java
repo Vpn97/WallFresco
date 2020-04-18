@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.apkzube.wallfresco.db.entity.WallpaperEntity;
+import com.apkzube.wallfresco.db.entity.Wallpaper;
 
 import java.util.List;
 
@@ -15,28 +15,28 @@ import java.util.List;
 public interface WallpaperDAO {
 
     @Insert
-    public String addWallpaper(WallpaperEntity wallpaper);
+    public String addWallpaper(Wallpaper wallpaper);
 
     @Update
-    public void updateWallpaper(WallpaperEntity wallpaper);
+    public void updateWallpaper(Wallpaper wallpaper);
 
     @Delete
-    public  void deleteWallpaper(WallpaperEntity wallpaper);
+    public  void deleteWallpaper(Wallpaper wallpaper);
 
     @Query("SELECT * FROM wallpaper_mst")
-    public List<WallpaperEntity> getAllWallpaper();
+    public List<Wallpaper> getAllWallpaper();
 
     @Query("SELECT * FROM wallpaper_mst WHERE id==:wallpaperId")
-    public WallpaperEntity getWallpaper(String wallpaperId);
+    public Wallpaper getWallpaper(String wallpaperId);
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_favorite==:"+true)
-    public List<WallpaperEntity> getFavoriteWallpapers();
+    public List<Wallpaper> getFavoriteWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded==:"+true)
-    public List<WallpaperEntity> getDowloadedWallpapers();
+    public List<Wallpaper> getDowloadedWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE category==:category")
-    public List<WallpaperEntity> getCategoryWallpapers(String category);
+    public List<Wallpaper> getCategoryWallpapers(String category);
 
 
 }

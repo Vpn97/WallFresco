@@ -20,8 +20,6 @@ import androidx.room.Room;
 public class Dashboard extends AppCompatActivity {
 
 
-    private WallpaperDataBase wallpaperDataBase;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +40,6 @@ public class Dashboard extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
-
-        wallpaperDataBase= Room.databaseBuilder(getApplicationContext(),WallpaperDataBase.class,getString(R.string.wallpaper_db_key))
-                .allowMainThreadQueries()
-                .build();
 
     }
 

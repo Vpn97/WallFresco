@@ -1,19 +1,41 @@
 package com.apkzube.wallfresco.ui.wallpaper;
 
-import androidx.lifecycle.LiveData;
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class WallpaperViewModel extends ViewModel {
+import com.apkzube.wallfresco.db.entity.Wallpaper;
 
-    private MutableLiveData<String> mText;
+import java.util.List;
 
-    public WallpaperViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+public class WallpaperViewModel extends AndroidViewModel{
+
+    private Application application;
+    private MutableLiveData<List<Wallpaper>> wallpaperLiveData=new MutableLiveData<>();
+
+    public WallpaperViewModel(@NonNull Application application) {
+        super(application);
+        this.application=application;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+
+
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+
+    public MutableLiveData<List<Wallpaper>> getWallpaperLiveData() {
+        return wallpaperLiveData;
+    }
+
+    public void setWallpaperLiveData(MutableLiveData<List<Wallpaper>> wallpaperLiveData) {
+        this.wallpaperLiveData = wallpaperLiveData;
     }
 }

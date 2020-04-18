@@ -118,6 +118,47 @@ public class WallpaperResponse implements Parcelable {
         }
     };
 
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public SrcResponse getSrc() {
+        return src;
+    }
+
+    public void setSrc(SrcResponse src) {
+        this.src = src;
+    }
+
     public String getPhotographer() {
         return photographer;
     }
