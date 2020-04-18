@@ -34,4 +34,9 @@ public interface WallpaperDAO {
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded==:"+true)
     public List<WallpaperEntity> getDowloadedWallpapers();
+
+    @Query("SELECT * FROM wallpaper_mst WHERE category==:category")
+    public List<WallpaperEntity> getCategoryWallpapers(String category);
+
+
 }

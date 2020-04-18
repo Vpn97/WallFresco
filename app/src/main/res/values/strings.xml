@@ -43,6 +43,7 @@
     <string name="wallpaper_downloaded">Wallpaper downloaded..!!</string>
     <string name="no_way">NO WAY</string>
     <string name="yes_i_have_love_to_do">Yes I\'D LOVE TO !</string>
+    <string name="wallpaper_db_key">WallpaperDB</string>
 
     <string-array name="wallpaper_category">
         <item>Abstract</item>
