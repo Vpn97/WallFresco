@@ -9,16 +9,20 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import com.apkzube.wallfresco.BR;
-import com.bumptech.glide.Glide;
+import com.apkzube.wallfresco.util.DateTypeConverters;
 
 import java.util.Date;
 
 @Entity(tableName = "wallpaper_mst")
 public class Wallpaper  extends BaseObservable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name="wallpaper_id")
+    private int wallpaperId;
+
     @ColumnInfo(name = "id")
     private String id;
 
@@ -57,10 +61,10 @@ public class Wallpaper  extends BaseObservable {
     @ColumnInfo(name="large2x")
     private String large2x;
 
-    @ColumnInfo(name="medium")
+    @ColumnInfo(name="large")
     private String large;
 
-    @ColumnInfo(name="")
+    @ColumnInfo(name="medium")
     private String medium;
 
     @ColumnInfo(name="small")
@@ -81,13 +85,15 @@ public class Wallpaper  extends BaseObservable {
     private boolean isDownloaded;
 
     @ColumnInfo(name = "created_date", defaultValue = "CURRENT_TIMESTAMP")
+    @TypeConverters(DateTypeConverters.class)
     private Date createdDate;
 
 
     //----------------
 
 
-    public Wallpaper(String id, String width, String height, String url, String photographer, String photographerUrl, String photographerId, boolean isFavorite, String category, String searchString, String original, String large2x, String large, String medium, String small, String portrait, String landscape, String tiny, boolean isDownloaded, Date createdDate) {
+    public Wallpaper(int wallpaperId, String id, String width, String height, String url, String photographer, String photographerUrl, String photographerId, boolean isFavorite, String category, String searchString, String original, String large2x, String large, String medium, String small, String portrait, String landscape, String tiny, boolean isDownloaded, Date createdDate) {
+        this.wallpaperId = wallpaperId;
         this.id = id;
         this.width = width;
         this.height = height;
@@ -112,6 +118,14 @@ public class Wallpaper  extends BaseObservable {
 
     @Ignore
     public Wallpaper() {
+    }
+
+    public int getWallpaperId() {
+        return wallpaperId;
+    }
+
+    public void setWallpaperId(int wallpaperId) {
+        this.wallpaperId = wallpaperId;
     }
 
     @Bindable

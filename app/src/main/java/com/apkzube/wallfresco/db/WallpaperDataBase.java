@@ -11,7 +11,7 @@ import com.apkzube.wallfresco.R;
 import com.apkzube.wallfresco.db.dao.WallpaperDAO;
 import com.apkzube.wallfresco.db.entity.Wallpaper;
 
-@Database(entities = {Wallpaper.class}, version = 1)
+@Database(entities = {Wallpaper.class}, version = 1,exportSchema = false)
 public abstract class WallpaperDataBase extends RoomDatabase {
 
     private static WallpaperDataBase instance;

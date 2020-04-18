@@ -17,7 +17,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-class WallpaperViewHolder extends RecyclerView.ViewHolder {
+class WallpaperViewHolder extends RecyclerView.ViewHolder{
     private ItemWallpaperBinding mBinding;
 
     public WallpaperViewHolder(@NonNull ItemWallpaperBinding mBinding) {
@@ -42,5 +42,14 @@ class WallpaperViewHolder extends RecyclerView.ViewHolder {
                     }
                 })
                 .into(mBinding.imgWallpaper);
+        mBinding.wallpaperLoading.setVisibility(View.GONE);
+    }
+
+    public ItemWallpaperBinding getmBinding() {
+        return mBinding;
+    }
+
+    public void setmBinding(ItemWallpaperBinding mBinding) {
+        this.mBinding = mBinding;
     }
 }

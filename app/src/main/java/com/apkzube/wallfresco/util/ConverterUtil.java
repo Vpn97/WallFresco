@@ -1,10 +1,13 @@
 package com.apkzube.wallfresco.util;
 
+import androidx.room.TypeConverter;
+
 import com.apkzube.wallfresco.db.entity.Wallpaper;
 import com.apkzube.wallfresco.response.PelexsResponse;
 import com.apkzube.wallfresco.response.WallpaperResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ConverterUtil {
 
@@ -29,7 +32,7 @@ public class ConverterUtil {
         return wallpaper;
     }
 
-    public ArrayList<Wallpaper> convertResponseToEntityList(PelexsResponse responses){
+    public static ArrayList<Wallpaper> convertResponseToEntityList(PelexsResponse responses){
         ArrayList<Wallpaper> wallpapers=new ArrayList<>();
         for (WallpaperResponse wallpaperResponse: responses.getWallpapers()) {
             if(wallpaperResponse !=null){

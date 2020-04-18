@@ -1,6 +1,8 @@
 package com.apkzube.wallfresco.db.dao;
 
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -15,7 +17,7 @@ import java.util.List;
 public interface WallpaperDAO {
 
     @Insert
-    public String addWallpaper(Wallpaper wallpaper);
+    public void addWallpaper(Wallpaper wallpaper);
 
     @Update
     public void updateWallpaper(Wallpaper wallpaper);
@@ -27,16 +29,16 @@ public interface WallpaperDAO {
     public List<Wallpaper> getAllWallpaper();
 
     @Query("SELECT * FROM wallpaper_mst WHERE id==:wallpaperId")
-    public Wallpaper getWallpaper(String wallpaperId);
+    public LiveData<Wallpaper> getWallpaper(String wallpaperId);
 
-    @Query("SELECT * FROM wallpaper_mst WHERE is_favorite==:"+true)
-    public List<Wallpaper> getFavoriteWallpapers();
+    @Query("SELECT * FROM wallpaper_mst WHERE is_favorite= 1")
+    public LiveData<Wallpaper> getFavoriteWallpapers();
 
-    @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded==:"+true)
-    public List<Wallpaper> getDowloadedWallpapers();
+    @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded= 1")
+    public LiveData<Wallpaper> getDowloadedWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE category==:category")
-    public List<Wallpaper> getCategoryWallpapers(String category);
+    public LiveData<Wallpaper> getCategoryWallpapers(String category);
 
 
 }

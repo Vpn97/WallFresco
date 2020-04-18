@@ -36,8 +36,10 @@
                     android:id="@+id/rvWallpaper"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    tools:itemCount="2"
-                    tools:listitem="@layout/item_wallpaper" />
+                    tools:itemCount="100"
+                    tools:layoutManager="GridLayoutManager"
+                    tools:listitem="@layout/recycler_view_item"
+                    tools:spanCount="5" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <com.airbnb.lottie.LottieAnimationView
@@ -46,6 +48,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="56dp"
                 android:scaleType="centerCrop"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
