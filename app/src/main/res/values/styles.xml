@@ -11,11 +11,25 @@
     </style>
 
 
+    <style name="AppTheme.SetWallpaper" parent="Theme.AppCompat.Light.NoActionBar">        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m" tools:ignore="NewApi">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+    </style>
+
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.Light.PopupMenu">
+        <item name="overlapAnchor">true</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" >
         <item name="android:fontFamily">@font/font</item>

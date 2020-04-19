@@ -2,6 +2,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -13,6 +14,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         tools:context=".activity.SetWallpaper">
 
         <com.airbnb.lottie.LottieAnimationView
@@ -57,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="@dimen/actionbar_size"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -99,8 +101,8 @@
                             android:layout_marginTop="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_weight="1"
-                            app:srcCompat="@{model.wallpaperLiveData.favorite?@drawable/ic_favorite_checked:@drawable/ic_favorite_unchecked}" />
-
+                            android:src="@drawable/ic_favorite_unchecked" />
+                        <!-- app:srcCompat="@{model.wallpaperLiveData.favorite?@drawable/ic_favorite_checked:@drawable/ic_favorite_unchecked}"-->
                         <ImageView
                             android:id="@+id/btnShare"
                             android:layout_width="32dp"
@@ -136,7 +138,8 @@
                         android:alpha="0.6"
                         android:fontFamily="@font/popin"
                         android:gravity="center"
-                        android:text="@{model.wallpaperLiveData.photographer} "
+                        android:padding="8dp"
+                        android:text="@{model.wallpaperLiveData.photographer}"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:typeface="normal" />
@@ -163,7 +166,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -176,9 +179,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/btnBackPress"
                 app:layout_constraintEnd_toEndOf="parent"

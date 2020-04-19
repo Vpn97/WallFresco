@@ -1,5 +1,8 @@
 package com.apkzube.wallfresco.db.entity;
 
+import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.ImageView;
 
 import androidx.databinding.BaseObservable;
@@ -12,12 +15,13 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.apkzube.wallfresco.BR;
+import com.apkzube.wallfresco.R;
 import com.apkzube.wallfresco.util.DateTypeConverters;
 
 import java.util.Date;
 
 @Entity(tableName = "wallpaper_mst")
-public class Wallpaper  extends BaseObservable {
+public class Wallpaper  extends BaseObservable  implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="wallpaper_id")
@@ -119,6 +123,74 @@ public class Wallpaper  extends BaseObservable {
     @Ignore
     public Wallpaper() {
     }
+
+    @Ignore
+    protected Wallpaper(Parcel in) {
+        wallpaperId = in.readInt();
+        id = in.readString();
+        width = in.readString();
+        height = in.readString();
+        url = in.readString();
+        photographer = in.readString();
+        photographerUrl = in.readString();
+        photographerId = in.readString();
+        isFavorite = in.readByte() != 0;
+        category = in.readString();
+        searchString = in.readString();
+        original = in.readString();
+        large2x = in.readString();
+        large = in.readString();
+        medium = in.readString();
+        small = in.readString();
+        portrait = in.readString();
+        landscape = in.readString();
+        tiny = in.readString();
+        isDownloaded = in.readByte() != 0;
+    }
+
+    @Override
+    @Ignore
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(wallpaperId);
+        dest.writeString(id);
+        dest.writeString(width);
+        dest.writeString(height);
+        dest.writeString(url);
+        dest.writeString(photographer);
+        dest.writeString(photographerUrl);
+        dest.writeString(photographerId);
+        dest.writeByte((byte) (isFavorite ? 1 : 0));
+        dest.writeString(category);
+        dest.writeString(searchString);
+        dest.writeString(original);
+        dest.writeString(large2x);
+        dest.writeString(large);
+        dest.writeString(medium);
+        dest.writeString(small);
+        dest.writeString(portrait);
+        dest.writeString(landscape);
+        dest.writeString(tiny);
+        dest.writeByte((byte) (isDownloaded ? 1 : 0));
+    }
+
+    @Override
+    @Ignore
+    public int describeContents() {
+        return 0;
+    }
+
+    @Ignore
+    public static final Creator<Wallpaper> CREATOR = new Creator<Wallpaper>() {
+        @Override
+        public Wallpaper createFromParcel(Parcel in) {
+            return new Wallpaper(in);
+        }
+
+        @Override
+        public Wallpaper[] newArray(int size) {
+            return new Wallpaper[size];
+        }
+    };
 
     public int getWallpaperId() {
         return wallpaperId;
@@ -329,5 +401,16 @@ public class Wallpaper  extends BaseObservable {
         this.createdDate = createdDate;
         notifyPropertyChanged(BR.createdDate);
     }
+
+/*
+    @BindingAdapter(value={"isFavorite"}, requireAll=false)
+    public void bindSrcCompat(ImageView imageView,boolean isFavorite){
+        // Your setter code goes here, like setDrawable or similar
+        if(isFavorite){
+            imageView.setImageResource(R.drawable.ic_favorite_checked);
+        }else{
+            imageView.setImageResource(R.drawable.ic_favorite_unchecked);
+        }
+    }*/
 
 }

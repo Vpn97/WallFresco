@@ -23,7 +23,7 @@
 
 
         <activity android:name=".activity.SetWallpaper"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme.SetWallpaper"/>
         <activity
             android:name=".activity.Dashboard"
             android:theme="@style/AppTheme"
@@ -34,6 +34,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <receiver android:name=".util.NetworkReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
+
+
+
 
 </manifest>

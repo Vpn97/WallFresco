@@ -1,16 +1,670 @@
 package com.apkzube.wallfresco.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.app.WallpaperManager;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Vibrator;
+import android.provider.MediaStore;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.apkzube.wallfresco.R;
+import com.apkzube.wallfresco.databinding.ActivitySetWallpaperBinding;
+import com.apkzube.wallfresco.db.entity.Wallpaper;
+import com.apkzube.wallfresco.util.Constant;
+import com.apkzube.wallfresco.viewmodel.SetWallpaperViewModel;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class SetWallpaper extends AppCompatActivity {
+
+
+    private static final String TAG = "SetWallpaper";
+    ImageView imgWallpaper;
+    Wallpaper mWallpaper;
+    LottieAnimationView setWallpaperLoading;
+    ImageView btnDownload, btnFavorite, btnShare, btnBackPress;
+    FloatingActionButton btnSetwallpaper;
+    ConstraintLayout grpSetUp;
+    ProgressDialog downloadDialog;
+    ProgressBar progressBar;
+    private Vibrator vibrator;
+    public String filePath;
+    public String folderPath;
+    Apply mApply;
+
+    private AlertDialog dialogDownload;
+
+    private ActivitySetWallpaperBinding mBinding;
+    private SetWallpaperViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_wallpaper);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
+        mWallpaper=getIntent().getParcelableExtra(getString(R.string.wallpaper_obj_key));
+
+        model= ViewModelProviders.of(this).get(SetWallpaperViewModel.class);
+        model.setApplication(getApplication());
+        model.getWallpaperLiveData().setValue(mWallpaper);
+        mBinding= DataBindingUtil.setContentView(this,R.layout.activity_set_wallpaper);
+        mBinding.setModel(model);
+
+        allocation();
+        setEvent();
+    }
+
+    private void allocation() {
+        grpSetUp = mBinding.grpSetUp;
+        setWallpaperLoading = mBinding.setWallpaperLoading;
+        btnBackPress = mBinding.btnBackPress;
+        btnDownload = mBinding.btnDownload;
+        btnFavorite = mBinding.btnFavorite;
+        btnShare = mBinding.btnShare;
+        btnSetwallpaper = mBinding.btnSetwallpaper;
+        imgWallpaper=mBinding.imgSetWallpaper;
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        progressBar = mBinding.progressBar;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setEvent() {
+        //photographer URL set up
+        mBinding.txtPhotographer.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mWallpaper.getPhotographerUrl()));
+            startActivity(intent);
+        });
+
+        //set wallpaper into image view
+        Glide.with(this)
+                .load(Uri.parse(mWallpaper.getPortrait()))
+                .thumbnail(0.1f)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        setWallpaperLoading.setVisibility(View.INVISIBLE);
+                        Log.d(TAG, "onResourceReady: " + setWallpaperLoading.getVisibility());
+                        return false;
+                    }
+                })
+                .into(imgWallpaper);
+
+
+
+        // set wallpaper when btnSet click
+        btnSetwallpaper.setOnClickListener(view -> {
+            if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)) {
+
+                progressBar.setVisibility(View.VISIBLE);
+                btnShare.setVisibility(View.GONE);
+                final WallpaperManager manager = WallpaperManager.getInstance(SetWallpaper.this);
+
+                try {
+
+                    URL url = new URL(mWallpaper.getLarge2x());
+                    Bitmap mBitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
+                    try {
+
+                        Bitmap bitmap = getScaledBitmap(mBitmap);
+                        manager.setBitmap(bitmap);
+                        vibrator.vibrate(50);
+                        setSuccessDialog();
+                        progressBar.setVisibility(View.GONE);
+                        btnShare.setVisibility(View.VISIBLE);
+                    } catch (Exception e) {
+                        Toast.makeText(SetWallpaper.this, "Fail to set Wallpaper", Toast.LENGTH_SHORT).show();
+                        Log.d(Constant.TAG, "onResourceReady: " + e.getMessage());
+                        setFailDialog();
+                        progressBar.setVisibility(View.GONE);
+                        btnShare.setVisibility(View.VISIBLE);
+                    }
+
+                } catch (Exception e) {
+                    Log.d(TAG, "onClick: " + e.getMessage());
+                }
+/*
+                Glide.with(SetWallpaper.this)
+                        .asBitmap()
+                        .load(mWallpaper.getSrc().getOriginal())
+                        .into(new SimpleTarget<Bitmap>() {
+
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            }
+                        });*/
+
+            } else {
+                setCurrentWallpaper();
+            }
+        });
+
+
+        imgWallpaper.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                grpSetUp.setVisibility(View.VISIBLE);
+            } else {
+                grpSetUp.setVisibility(View.INVISIBLE);
+            }
+            return true;
+        });
+
+        btnBackPress.setOnClickListener(view -> onBackPressed());
+
+        btnShare.setOnClickListener(view -> {
+            btnShare.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            shareWallpaper(mWallpaper);
+        });
+
+
+        // TODO save favorite wallpaper into room
+        btnFavorite.setOnClickListener(view -> vibrator.vibrate(50));
+
+        btnDownload.setOnClickListener(view -> {
+            final PopupMenu menu = new PopupMenu(getApplicationContext(), btnDownload, Gravity.NO_GRAVITY);
+            menu.getMenuInflater().inflate(R.menu.download_menu, menu.getMenu());
+            menu.show();
+
+            final DownloadFileFromURL downloadFileFromURL = new DownloadFileFromURL();
+            menu.setOnMenuItemClickListener(menuItem -> {
+                String downloadURL = mWallpaper.getOriginal();
+                try {
+                    switch (menuItem.getItemId()) {
+                        case R.id.original:
+                            downloadURL = mWallpaper.getOriginal();
+                            filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/original_" + mWallpaper.getId() + ".jpeg";
+                            break;
+                        case R.id.medium:
+                            downloadURL = mWallpaper.getLarge();
+                            filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/medium_" + mWallpaper.getId() + ".jpeg";
+                            break;
+                        case R.id.large:
+                            downloadURL = mWallpaper.getLarge2x();
+                            filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/large_" + mWallpaper.getId() + ".jpeg";
+                            break;
+                    }
+                    menu.dismiss();
+                    downloadDialog = new ProgressDialog(SetWallpaper.this);
+                    downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    downloadDialog.setCancelable(false);
+                    downloadDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL", (dialogInterface, i) -> {
+                        if (!downloadFileFromURL.isCancelled()) {
+                            downloadFileFromURL.cancel(true);
+                            if (downloadDialog.isShowing())
+                                downloadDialog.dismiss();
+                        }
+                    });
+                    downloadDialog.setTitle("Downloading...");
+                    downloadDialog.setMax(100);
+                    downloadFileFromURL.execute(downloadURL);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // downloadDialog.setMessage(wallpaper.getImgFile());
+                return true;
+            });
+        });
+
+       //btnDownload.setOnClickListener(view -> downloadWallpaperDialog());
+
+    }
+
+
+    public void downloadWallpaperDialog(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(SetWallpaper.this);
+        final View dialogView = LayoutInflater.from(SetWallpaper.this).inflate(R.layout.diaload_download_wallpaper, null);
+        builder.setView(dialogView);
+        final AlertDialog dialogDownload = builder.create();
+        dialogDownload.show();
+        dialogDownload.setCancelable(true);
+
+        LinearLayout btnMedium,btnOriginal,btnLarge;
+        btnMedium=dialogView.findViewById(R.id.btnMedium);
+        btnOriginal=dialogView.findViewById(R.id.btnOriginal);
+        btnLarge=dialogView.findViewById(R.id.btnLarge);
+
+        btnMedium.setOnClickListener(this::onDownloadBtnClick);
+        btnOriginal.setOnClickListener(this::onDownloadBtnClick);
+        btnLarge.setOnClickListener(this::onDownloadBtnClick);
+    }
+
+
+    public void onDownloadBtnClick(View view){
+        LinearLayout btn=(LinearLayout)view;
+        String downloadURL = mWallpaper.getOriginal();
+
+        final DownloadFileFromURL downloadFileFromURL = new DownloadFileFromURL();
+        try {
+            switch (btn.getId()) {
+                case R.id.btnMedium:
+                    downloadURL = mWallpaper.getOriginal();
+                    filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/original_" + mWallpaper.getId() + ".jpeg";
+                    break;
+                case R.id.btnOriginal:
+                    downloadURL = mWallpaper.getLarge();
+                    filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/medium_" + mWallpaper.getId() + ".jpeg";
+                    break;
+                case R.id.btnLarge:
+                    downloadURL = mWallpaper.getLarge2x();
+                    filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/large_" + mWallpaper.getId() + ".jpeg";
+                    break;
+            }
+
+            dialogDownload.dismiss();
+            downloadDialog = new ProgressDialog(SetWallpaper.this);
+            downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            downloadDialog.setCancelable(false);
+            downloadDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL", (dialogInterface, i) -> {
+                if (!downloadFileFromURL.isCancelled()) {
+                    downloadFileFromURL.cancel(true);
+                    if (downloadDialog.isShowing())
+                        downloadDialog.dismiss();
+                }
+            });
+            downloadDialog.setTitle("Downloading...");
+            downloadDialog.setMax(100);
+
+            downloadFileFromURL.execute(downloadURL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    private void setCurrentWallpaper() {
+
+        try {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(SetWallpaper.this);
+            final View dialogView = LayoutInflater.from(SetWallpaper.this).inflate(R.layout.wallpaper_bottomsheet, null);
+            builder.setView(dialogView);
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.setCancelable(true);
+
+
+            LinearLayout btnHome, btnLoack, btnBoth;
+            btnHome = dialogView.findViewById(R.id.btnHome);
+            btnLoack = dialogView.findViewById(R.id.btnLock);
+            btnBoth = dialogView.findViewById(R.id.btnBoth);
+
+            btnHome.setOnClickListener(view -> {
+                mApply = Apply.HOMESCREEN;
+                dialog.dismiss();
+            });
+
+            btnLoack.setOnClickListener(view -> {
+                mApply = Apply.LOCKSCREEN;
+                dialog.dismiss();
+            });
+
+            btnBoth.setOnClickListener(view -> {
+                Log.d(TAG, "onClick: btnBoth");
+                mApply = Apply.HOMESCREEN_LOCKSCREEN;
+                dialog.dismiss();
+            });
+
+            dialog.setOnDismissListener(dialogInterface -> {
+
+                progressBar.setVisibility(View.VISIBLE);
+                btnShare.setVisibility(View.GONE);
+
+                Log.d(SetWallpaper.TAG, "onDismiss: ");
+                if (mApply != null) {
+                    final WallpaperManager manager = WallpaperManager.getInstance(SetWallpaper.this);
+
+
+                    Glide.with(SetWallpaper.this)
+                            .asBitmap()
+                            .load(mWallpaper.getLarge2x())
+                            .into(new SimpleTarget<Bitmap>() {
+
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap mBitmap, @Nullable Transition<? super Bitmap> transition) {
+
+                                        try {
+
+                                            Bitmap bitmap = getScaledBitmap(mBitmap);
+
+                                            if (mApply == Apply.HOMESCREEN_LOCKSCREEN) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                    manager.setBitmap(
+                                                            bitmap, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
+                                                }
+                                            }
+
+                                            if (mApply == Apply.HOMESCREEN) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                    manager.setBitmap(
+                                                            bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
+                                                }
+
+                                            }
+
+                                            if (mApply == Apply.LOCKSCREEN) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                    manager.setBitmap(
+                                                            bitmap, null, true, WallpaperManager.FLAG_LOCK);
+                                                }
+                                            }
+
+                                            vibrator.vibrate(50);
+                                            setSuccessDialog();
+                                            progressBar.setVisibility(View.GONE);
+                                            btnShare.setVisibility(View.VISIBLE);
+                                            mApply = null;
+                                        } catch (Exception e) {
+                                            Toast.makeText(SetWallpaper.this, "Fail to set Wallpaper", Toast.LENGTH_SHORT).show();
+                                            Log.d(Constant.TAG, "onResourceReady: " + e.getMessage());
+                                            setFailDialog();
+                                            progressBar.setVisibility(View.GONE);
+                                            btnShare.setVisibility(View.VISIBLE);
+
+                                        }
+                                }
+                            });
+
+
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    btnShare.setVisibility(View.VISIBLE);
+                }
+
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setSuccessDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(SetWallpaper.this);
+        LayoutInflater inflater = LayoutInflater.from(SetWallpaper.this);
+        final View view = inflater.inflate(R.layout.layout_wallpaper_set_success_dialog, null);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        Button btnDismiss = view.findViewById(R.id.btnDismiss);
+        Button btnRateUs = view.findViewById(R.id.btnRateUs);
+
+        btnDismiss.setOnClickListener(view1 -> dialog.dismiss());
+
+        btnRateUs.setOnClickListener(view12 -> {
+            dialog.dismiss();
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+        });
+        dialog.show();
+    }
+
+    private void setFailDialog() {
+
+    }
+
+    public Bitmap getScaledBitmap(Bitmap bitmap) {
+
+        // Get display dimensions
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final int displayWidth = metrics.widthPixels;
+        final int displayHeight = metrics.heightPixels;
+
+        // Here I'm decoding a resource, just for the example sake
+        //final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.picture);
+
+        // obtain the original Bitmap's dimensions
+        final int originalWidth = bitmap.getWidth();
+        final int originalHeight = bitmap.getHeight();
+
+        // Obtain the horizontal and vertical scale factors
+        final float horizontalScaleFactor = (float) originalWidth / (float) displayWidth;
+        final float verticalScaleFactor = (float) originalHeight / (float) displayHeight;
+
+        // Get the biggest scale factor to use in order to maintain original image's aspect ratio
+        final float scaleFactor = Math.max(verticalScaleFactor, horizontalScaleFactor);
+        final int finalWidth = (int) (originalWidth / scaleFactor);
+        final int finalHeight = (int) (originalHeight / scaleFactor);
+
+        // Create the final bitmap
+
+      /*  // Recycle the original bitmap
+      //*  if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap = null;
+        }//*
+*/
+
+
+        return Bitmap.createScaledBitmap(
+                bitmap, finalWidth, finalHeight, false);
+
+    }
+
+    private void shareWallpaper(final Wallpaper wallpaper) {
+
+        Glide.with(SetWallpaper.this)
+                .asBitmap()
+                .load(wallpaper.getOriginal())
+                .into(new SimpleTarget<Bitmap>() {
+
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        try {
+                            String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), resource, wallpaper.getId(), wallpaper.getUrl());
+                            Uri imgUri = Uri.parse(bitmapPath);
+                            String sharingText = getResources().getString(R.string.share_image_text) + "\n\n" + getResources().getString(R.string.app_name) + "  : " + "https://play.google.com/store/apps/details?id=" + getPackageName();
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("*/*");
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
+
+                            progressBar.setVisibility(View.GONE);
+                            btnShare.setVisibility(View.VISIBLE);
+                            startActivity(Intent.createChooser(shareIntent, "Share Wallpaper.."));
+                        } catch (Exception e) {
+                            progressBar.setVisibility(View.GONE);
+                            btnShare.setVisibility(View.VISIBLE);
+                            Toast.makeText(SetWallpaper.this, "Fail share wallpaper", Toast.LENGTH_SHORT).show();
+                            Log.d(Constant.TAG, "onResourceReady: " + e.getMessage());
+
+                        }
+                    }
+                });
+    }
+
+    class  DownloadFileFromURL extends AsyncTask<String, String, String> {
+        /**
+         * Before starting background thread
+         * Show Progress Bar Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            downloadDialog.show();
+            folderPath = android.os.Environment.getExternalStorageDirectory().getPath() + File.separator + getString(R.string.app_name);
+            File downloadFolder = new File(folderPath);
+            if (!downloadFolder.exists()) {
+                downloadFolder.mkdirs();
+            }
+            Log.d(Constant.TAG, "onPreExecute: " + downloadFolder.getAbsolutePath());
+        }
+
+        /**
+         * Downloading file in background thread
+         */
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+                // this will be useful so that you can show a tipical 0-100%           progress bar
+                int lenghtOfFile = conection.getContentLength();
+
+                // download the file
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+                // Output stream
+                OutputStream output = new FileOutputStream(filePath);
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+
+                    // writing data to file
+                    output.write(data, 0, count);
+                }
+
+                // flushing output
+                output.flush();
+
+                // closing streams
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("ApkZube", "" + e.getMessage());
+            }
+
+            return null;
+        }
+
+        /**
+         * Updating progress bar
+         */
+        protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
+            downloadDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            File f = new File(filePath);
+            if (f.exists()) {
+                f.delete();
+                Log.d(TAG, "onCancelled: file deleted");
+            }
+        }
+
+        /**
+         * After completing background task
+         * Dismiss the progress dialog
+         **/
+
+        @Override
+        protected void onPostExecute(String file_url) {
+            downloadDialog.dismiss();
+            Log.d(TAG, "onPostExecute: " + filePath);
+            // setting downloaded into image view
+            try {
+                if (new File(filePath).exists())
+                    openFile(filePath);
+            } catch (Exception e) {
+                Log.d(Constant.TAG, "onPostExecute: " + e.getMessage());
+            }
+
+        }
+
+    }
+
+     protected void openFile(final String fileName) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(SetWallpaper.this);
+        LayoutInflater inflater = LayoutInflater.from(SetWallpaper.this);
+        final View view = inflater.inflate(R.layout.layout_download_dialog, null);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        Button btnDismiss = view.findViewById(R.id.btnDownloadDismiss);
+        Button btnOpen = view.findViewById(R.id.btnOpenPhoto);
+
+        btnDismiss.setOnClickListener(view1 -> dialog.dismiss());
+
+        btnOpen.setOnClickListener(view12 -> {
+            dialog.dismiss();
+            try {
+                Intent install = new Intent(Intent.ACTION_VIEW);
+                install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri apkURI = FileProvider.getUriForFile(
+                        SetWallpaper.this,
+                        SetWallpaper.this.getApplicationContext()
+                                .getPackageName() + ".provider", new File(fileName));
+                install.setDataAndType(apkURI, "image/*");
+                install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                SetWallpaper.this.startActivity(install);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        dialog.show();
+
+    }
+
+    public enum Apply {
+        LOCKSCREEN,
+        HOMESCREEN,
+        HOMESCREEN_LOCKSCREEN
     }
 }
