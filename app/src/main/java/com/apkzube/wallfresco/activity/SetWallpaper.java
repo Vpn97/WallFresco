@@ -37,6 +37,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +81,8 @@ public class SetWallpaper extends AppCompatActivity {
     public String filePath;
     public String folderPath;
     Apply mApply;
+
+    private PopupWindow window;
 
     private AlertDialog dialogDownload;
 
@@ -220,7 +223,7 @@ public class SetWallpaper extends AppCompatActivity {
         // TODO save favorite wallpaper into room
         btnFavorite.setOnClickListener(view -> vibrator.vibrate(50));
 
-        btnDownload.setOnClickListener(view -> {
+     /*   btnDownload.setOnClickListener(view -> {
             final PopupMenu menu = new PopupMenu(getApplicationContext(), btnDownload, Gravity.NO_GRAVITY);
             menu.getMenuInflater().inflate(R.menu.download_menu, menu.getMenu());
             menu.show();
@@ -263,9 +266,10 @@ public class SetWallpaper extends AppCompatActivity {
                 // downloadDialog.setMessage(wallpaper.getImgFile());
                 return true;
             });
-        });
+        });*/
 
        //btnDownload.setOnClickListener(view -> downloadWallpaperDialog());
+       btnDownload.setOnClickListener(view -> downloadPopupWindow());
 
     }
 
@@ -310,7 +314,8 @@ public class SetWallpaper extends AppCompatActivity {
                     break;
             }
 
-            dialogDownload.dismiss();
+            //dialogDownload.dismiss();
+            window.dismiss();
             downloadDialog = new ProgressDialog(SetWallpaper.this);
             downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             downloadDialog.setCancelable(false);
@@ -629,6 +634,34 @@ public class SetWallpaper extends AppCompatActivity {
         }
 
     }
+
+
+    public void downloadPopupWindow(){
+        //Create a View object yourself through inflater
+        LayoutInflater inflater=getLayoutInflater();
+        View popupView = inflater.inflate(R.layout.diaload_download_wallpaper, null);
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        window=new PopupWindow(popupView,width,height,true);
+        window.showAtLocation(mBinding.getRoot(), Gravity.CENTER, 0, 0);
+        window.setAnimationStyle(R.style.Animation_Design_BottomSheetDialog);
+
+        ConstraintLayout conDismiss=popupView.findViewById(R.id.consDismiss);
+        LinearLayout btnMedium,btnOriginal,btnLarge;
+        btnMedium=popupView.findViewById(R.id.btnMedium);
+        btnOriginal=popupView.findViewById(R.id.btnOriginal);
+        btnLarge=popupView.findViewById(R.id.btnLarge);
+
+        btnMedium.setOnClickListener(this::onDownloadBtnClick);
+        btnOriginal.setOnClickListener(this::onDownloadBtnClick);
+        btnLarge.setOnClickListener(this::onDownloadBtnClick);
+
+        /*mBinding.grpSetUp.setVisibility(View.INVISIBLE);
+        window.setOnDismissListener(() -> mBinding.grpSetUp.setVisibility(View.VISIBLE));*/
+        conDismiss.setOnClickListener(view -> window.dismiss());
+    }
+
 
      protected void openFile(final String fileName) {
 
