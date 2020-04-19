@@ -48,7 +48,6 @@ public class WallpaperFragment extends Fragment {
     private void allocation() {
         model = ViewModelProviders.of(this).get(WallpaperViewModel.class);
         mBinding.setModel(model);
-        mBinding.wallpaperFragmentLoading.playAnimation();
         rvWallpaper=mBinding.rvWallpaper;
         chipsCategory=mBinding.chipsCategory;
 

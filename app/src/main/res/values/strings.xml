@@ -3,6 +3,9 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
 
 
 
@@ -44,6 +47,9 @@
     <string name="no_way">NO WAY</string>
     <string name="yes_i_have_love_to_do">Yes I\'D LOVE TO !</string>
     <string name="wallpaper_db_key">WallpaperDB</string>
+    <string name="user_count_key">user_count_key</string>
+    <string name="no_internet_msg">No Internet..!!</string>
+    <string name="devloper_mail">hexane.labs@gmail.com</string>
 
     <string-array name="wallpaper_category">
         <item>Abstract</item>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group>
+
+
+        <item
+            android:id="@+id/nav_menu_share_app"
+            android:icon="@drawable/ic_outline_share"
+            android:iconTint="@color/white"
+            android:title="@string/nav_share_app" />
+
+        <item
+            android:id="@+id/nav_menu_rating"
+            android:icon="@drawable/ic_star_border_black_24dp"
+            android:iconTint="@color/white"
+            android:title="@string/nav_menu_rating_app" />
+
+
+
+        <item
+            android:id="@+id/nav_contact_us"
+            android:icon="@drawable/ic_mail_outline_black_24dp"
+            android:iconTint="@color/white"
+            android:title="@string/nev_menu_contact_us" />
+
+
+        <item
+            android:id="@+id/nav_privacy_policy"
+            android:icon="@drawable/ic_security_black_24dp"
+            android:iconTint="@color/white"
+            android:title="Privacy Policy" />
+        <item
+            android:id="@+id/nav_menu_about_app"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:iconTint="@color/white"
+            android:title="@string/nav_menu_about_app" />
+    </group>
+</menu>
+

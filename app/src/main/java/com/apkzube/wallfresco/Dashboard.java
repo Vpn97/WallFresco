@@ -1,23 +1,70 @@
 package com.apkzube.wallfresco;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.apkzube.wallfresco.databinding.ActivityDashboardBinding;
 import com.apkzube.wallfresco.db.WallpaperDataBase;
+import com.apkzube.wallfresco.ui.favorite.FavoriteFragment;
+import com.apkzube.wallfresco.ui.trending.TrendingFragment;
+import com.apkzube.wallfresco.ui.wallpaper.WallpaperFragment;
+import com.apkzube.wallfresco.util.BroadcastListener;
+import com.apkzube.wallfresco.util.Constant;
+import com.apkzube.wallfresco.util.DataStorage;
+import com.apkzube.wallfresco.util.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.room.Room;
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener, BroadcastListener {
+
+    String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    public static final Integer REQUEST_CODE = 99;
+    private DataStorage storage;
+    int useCount;
+    boolean isPermissionGranted;
+    private ActivityDashboardBinding mBinding;
+    private Fragment wallpaperFragment, trendingFragment, favoriteFragment, activeFragment;
+    private FragmentManager fragmentManager;
+    private Snackbar snack;
+    private NetworkReceiver networkReceiver;
+    private BottomNavigationView bottomNavigationView;
 
 
     @Override
@@ -25,26 +72,160 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        storage = new DataStorage(this, getString(R.string.user_data));
+        useCount = (int) storage.read(getString(R.string.user_count_key), DataStorage.INTEGER);
+        if (useCount == 0) {
+            useCount = 1;
+            storage.write(getString(R.string.user_count_key), useCount);
+        } else {
+            useCount++;
+            storage.write(getString(R.string.user_count_key), useCount);
+        }
+
         allocation();
+        takePermission();
         setEvent();
 
     }
 
     private void allocation() {
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
+
+        mBinding= DataBindingUtil.setContentView(this,R.layout.activity_dashboard);
+
+        /*AppBarConfiguration appBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.bottom_menu_wallpaper, R.id.bottom_menu_trend, R.id.bottom_menu_favorite)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        NavigationUI.setupWithNavController(navView, navController);*/
 
+        //-------------------------------------------------------------
+
+        bottomNavigationView=mBinding.appBarDashboard.bottomNavigation;
+
+        wallpaperFragment = new WallpaperFragment();
+        trendingFragment = new TrendingFragment();
+        favoriteFragment = new FavoriteFragment();
+        fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction().add(R.id.rootFram, favoriteFragment, "favorite").hide(favoriteFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.rootFram, trendingFragment, "trending").hide(trendingFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.rootFram, wallpaperFragment, "wallpaper").commit();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mBinding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mBinding.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        mBinding.navView.setNavigationItemSelectedListener(this);
+
+        //set Snack bar for Internet Connection
+        snack = Snackbar.make(mBinding.appBarDashboard.conLayout,getString(R.string.no_internet_msg), Snackbar.LENGTH_LONG);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)snack.getView().getLayoutParams();
+        params.setMargins(0, 0, 0, bottomNavigationView.getHeight());
+        snack.getView().setLayoutParams(params);
+
+        networkReceiver = new NetworkReceiver(this);
+        try {
+            broadcastIntent();
+        } catch (Exception e) {
+            Log.e(Constant.TAG, "onRequestPermissionsResult: ", e);
+        }
     }
 
     private void setEvent() {
+        activeFragment = wallpaperFragment;
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+
+            switch (menuItem.getItemId()) {
+                case R.id.bottom_menu_wallpaper:
+                    fragmentManager.beginTransaction().hide(activeFragment).show(wallpaperFragment).commit();
+                    activeFragment = wallpaperFragment;
+
+
+                    break;
+
+                case R.id.bottom_menu_trend:
+                    fragmentManager.beginTransaction().hide(activeFragment).show(trendingFragment).commit();
+                    activeFragment = trendingFragment;
+
+                    break;
+
+                case R.id.bottom_menu_favorite:
+                    fragmentManager.beginTransaction().hide(activeFragment).show(favoriteFragment).commit();
+                    activeFragment = favoriteFragment;
+
+                    break;
+            }
+            return true;
+        });
+    }
+
+    public void broadcastIntent() {
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void takePermission() {
+        //check Bulid version
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(Dashboard.this, permissions[0]) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(Dashboard.this, permissions[1]) != PackageManager.PERMISSION_GRANTED) {
+                //permission is not granted need to get permission
+                this.requestPermissions(permissions, REQUEST_CODE);
+            } else {
+                //Permition Already Granted
+                isPermissionGranted = true;
+
+            }
+        }
+    }
+
+
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.nav_menu_rating:
+
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+
+                break;
+            case R.id.nav_menu_share_app:
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        "Download best " + getString(R.string.app_name) + " : https://play.google.com/store/apps/details?id=" + getPackageName() + "\n\n" +
+                                "Love 4K Wallpapers is a free app that has a large varities of 4K (UHD | Ultra HD) as well as Full HD (High Definition) wallpapers | backgrounds.\n"
+                                + "\n\n" + "follow apkzube.dev on Instagram : https://www.instagram.com/apkzube\n");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+
+                break;
+
+            case R.id.nav_menu_about_app:
+                setAboutAppDialog();
+                break;
+
+            case R.id.nav_contact_us:
+                sendEmail();
+                break;
+
+            case R.id.nav_privacy_policy:
+                setPrivacyPolicy();
+                break;
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
 
@@ -73,4 +254,137 @@ public class Dashboard extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults[0] == RESULT_OK && grantResults[1] == RESULT_OK) {
+                //permission not granted
+                Toast.makeText(this, "We need permission for features", Toast.LENGTH_SHORT).show();
+            } else {
+                isPermissionGranted = true;
+            }
+        }
+    }
+
+
+    @Override
+    public void updateUI(boolean isInternet) {
+
+        Log.d(Constant.TAG, "updateUI: "+isInternet);
+        if (isInternet) {
+
+            if (snack.isShown()) {
+                snack.dismiss();
+                Log.d(Constant.TAG, "updateUI: dismiss");
+            }
+
+        } else {
+            if (!snack.isShown())
+                snack.show();
+            Log.d(Constant.TAG, "updateUI: show");
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (useCount % 3 == 0) {
+            storage.write(getString(R.string.user_count_key), ++useCount);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+            LayoutInflater inflater = LayoutInflater.from(Dashboard.this);
+            final View view = inflater.inflate(R.layout.layout_rating_dialog, null);
+            builder.setView(view);
+            final AlertDialog dialog = builder.create();
+            Button btnNo = view.findViewById(R.id.btnNo);
+            Button btnRate = view.findViewById(R.id.btnRate);
+
+            btnNo.setOnClickListener(view12 -> dialog.dismiss());
+
+            btnRate.setOnClickListener(view1 -> {
+                dialog.dismiss();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            dialog.show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            unregisterReceiver(networkReceiver);
+        } catch (Exception e) {
+            Log.d(Constant.TAG, "onPause: " + e.getMessage());
+        }
+    }
+
+
+    private void setAboutAppDialog() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+        LayoutInflater inflater = LayoutInflater.from(Dashboard.this);
+        final View aboutAppView = inflater.inflate(R.layout.layout_about_app, null);
+        builder.setView(aboutAppView);
+
+
+        Button btnPrivacyPolicy = aboutAppView.findViewById(R.id.btnPrivacyPolicy);
+        Button btnOpenSource = aboutAppView.findViewById(R.id.btnOpenSource);
+
+        btnOpenSource.setOnClickListener(view -> {
+            builder.create().dismiss();
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.uri_opern_source))));
+        });
+
+        btnPrivacyPolicy.setOnClickListener(view -> {
+            builder.create().dismiss();
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.uri_privacy_policy))));
+        });
+        builder.create().show();
+    }
+
+    private void setPrivacyPolicy() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+        LayoutInflater inflater = LayoutInflater.from(Dashboard.this);
+        final View PolicyView = inflater.inflate(R.layout.layout_privacy_policy, null);
+        builder.setView(PolicyView);
+        builder.setTitle(getResources().getString(R.string.app_name) + " Privacy Policy");
+        builder.setIcon(R.mipmap.ic_launcher);
+        final WebView webView = PolicyView.findViewById(R.id.webView);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                webView.loadUrl(getString(R.string.privacy_policy_path));
+                return false;
+            }
+        });
+        webView.loadUrl(getString(R.string.privacy_policy_path));
+        builder.setPositiveButton("AGREE", (dialog, which) -> builder.create().dismiss());
+        builder.create().show();
+    }
+
+    protected void sendEmail() {
+        String TO = "";
+        String CC = getString(R.string.devloper_mail);
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + CC));
+
+
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " : Your subject");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "ArcX Dev : Send Email"));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(Dashboard.this,
+                    "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
