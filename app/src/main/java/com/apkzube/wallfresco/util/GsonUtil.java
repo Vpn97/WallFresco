@@ -23,7 +23,6 @@ public class GsonUtil {
             }
         }
 
-
         @Override public Boolean read(JsonReader in) throws IOException {
             JsonToken peek = in.peek();
             switch (peek) {

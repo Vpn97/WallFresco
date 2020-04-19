@@ -11,7 +11,7 @@
         android:id="@+id/conLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".Dashboard">
+        tools:context=".activity.Dashboard">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
