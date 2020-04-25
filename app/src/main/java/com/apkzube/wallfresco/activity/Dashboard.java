@@ -46,7 +46,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-public class Dashboard extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener, BroadcastListener {
+public class Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BroadcastListener {
 
     String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final Integer REQUEST_CODE = 99;
@@ -85,7 +85,7 @@ public class Dashboard extends AppCompatActivity  implements NavigationView.OnNa
 
     private void allocation() {
 
-        mBinding= DataBindingUtil.setContentView(this,R.layout.activity_dashboard);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard);
 
         /*AppBarConfiguration appBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.bottom_menu_wallpaper, R.id.bottom_menu_trend, R.id.bottom_menu_favorite)
@@ -96,7 +96,7 @@ public class Dashboard extends AppCompatActivity  implements NavigationView.OnNa
 
         //-------------------------------------------------------------
 
-        bottomNavigationView=mBinding.appBarDashboard.bottomNavigation;
+        bottomNavigationView = mBinding.appBarDashboard.bottomNavigation;
 
         wallpaperFragment = new WallpaperFragment();
         trendingFragment = new TrendingFragment();
@@ -116,8 +116,8 @@ public class Dashboard extends AppCompatActivity  implements NavigationView.OnNa
         mBinding.navView.setNavigationItemSelectedListener(this);
 
         //set Snack bar for Internet Connection
-        snack = Snackbar.make(mBinding.appBarDashboard.conLayout,getString(R.string.no_internet_msg), Snackbar.LENGTH_LONG);
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)snack.getView().getLayoutParams();
+        snack = Snackbar.make(mBinding.appBarDashboard.conLayout, getString(R.string.no_internet_msg), Snackbar.LENGTH_LONG);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snack.getView().getLayoutParams();
         params.setMargins(0, 0, 0, bottomNavigationView.getHeight());
         snack.getView().setLayoutParams(params);
 
@@ -176,7 +176,6 @@ public class Dashboard extends AppCompatActivity  implements NavigationView.OnNa
             }
         }
     }
-
 
 
     @Override
@@ -266,7 +265,7 @@ public class Dashboard extends AppCompatActivity  implements NavigationView.OnNa
     @Override
     public void updateUI(boolean isInternet) {
 
-        Log.d(Constant.TAG, "updateUI: "+isInternet);
+        Log.d(Constant.TAG, "updateUI: " + isInternet);
         if (isInternet) {
 
             if (snack.isShown()) {
@@ -309,6 +308,7 @@ public class Dashboard extends AppCompatActivity  implements NavigationView.OnNa
             super.onBackPressed();
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -380,5 +380,16 @@ public class Dashboard extends AppCompatActivity  implements NavigationView.OnNa
             Toast.makeText(Dashboard.this,
                     "There is no email client installed.", Toast.LENGTH_SHORT).show();
         }
+
+
+       /* try {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+            this.startActivity(intent);
+        } catch (android.content.ActivityNotFoundException anfe) {
+            Toast.makeText(Dashboard.this,
+                    "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
+*/
     }
 }
