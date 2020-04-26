@@ -5,9 +5,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.apkzube.wallfresco.db.entity.Wallpaper;
+import com.apkzube.wallfresco.db.repo.WallRepository;
 import com.apkzube.wallfresco.response.PelexsResponse;
 import com.apkzube.wallfresco.service.PexelsService;
 import com.apkzube.wallfresco.service.impl.PexelsServiceImpl;
@@ -26,13 +28,21 @@ import retrofit2.Response;
 public class WallpaperViewModel extends AndroidViewModel{
 
     private Application application;
-    private MutableLiveData<ArrayList<Wallpaper>> wallpaperLiveData=new MutableLiveData<>();
+    private LiveData<List<Wallpaper>> wallpaperLiveData=new MutableLiveData<>();
+    private WallRepository repository;
 
     public WallpaperViewModel(@NonNull Application application) {
         super(application);
         this.application=application;
+        repository=new WallRepository(application);
     }
 
+
+
+    public LiveData<List<Wallpaper>> getAllWallpaper(){
+        wallpaperLiveData= repository.getAllWallpaper();
+        return wallpaperLiveData;
+    }
 
 
     public void setWallpapers(){
@@ -46,7 +56,7 @@ public class WallpaperViewModel extends AndroidViewModel{
 
                 if(null!=response && null!=response.body()) {
                     ArrayList<Wallpaper> wallpapers = ConverterUtil.convertResponseToEntityList(response.body());
-                    wallpaperLiveData.setValue(wallpapers);
+                    repository.insertAllWallpapers(wallpapers);
                 }
             }
 
@@ -68,11 +78,11 @@ public class WallpaperViewModel extends AndroidViewModel{
         this.application = application;
     }
 
-    public MutableLiveData<ArrayList<Wallpaper>> getWallpaperLiveData() {
+    public LiveData<List<Wallpaper>> getWallpaperLiveData() {
         return wallpaperLiveData;
     }
 
-    public void setWallpaperLiveData(MutableLiveData<ArrayList<Wallpaper>> wallpaperLiveData) {
+    public void setWallpaperLiveData(LiveData<List<Wallpaper>> wallpaperLiveData) {
         this.wallpaperLiveData = wallpaperLiveData;
     }
 }

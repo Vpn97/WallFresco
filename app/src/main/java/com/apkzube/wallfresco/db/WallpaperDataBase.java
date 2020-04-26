@@ -22,7 +22,7 @@ public abstract class WallpaperDataBase extends RoomDatabase {
     public static synchronized WallpaperDataBase getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(), WallpaperDataBase.class, context.getString(R.string.wallpaper_db_key))
-                    .allowMainThreadQueries()
+
                     .fallbackToDestructiveMigration()
                     .build();
         }

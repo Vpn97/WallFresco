@@ -8,6 +8,7 @@ import com.apkzube.wallfresco.db.WallpaperDataBase;
 import com.apkzube.wallfresco.db.dao.WallpaperDAO;
 import com.apkzube.wallfresco.db.entity.Wallpaper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -23,6 +24,18 @@ public class WallRepository {
         this.executor = Executors.newFixedThreadPool(5);
         this.wallpaperDAO = WallpaperDataBase.getInstance(application.getApplicationContext()).getWallpaperDAO();
     }
+
+
+    public void insertWallpaper(Wallpaper wallpaper) {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                wallpaperDAO.insertWallpaper(wallpaper);
+            }
+        });
+    }
+
 
     public void insertAllWallpapers(List<Wallpaper> wallpapers) {
         Executor executor = Executors.newSingleThreadExecutor();
@@ -62,15 +75,15 @@ public class WallRepository {
         return wallpaperDAO.getWallpapers(mLimit);
     }
 
-    public LiveData<Wallpaper> getCategoryWallpapers(String category){
+    public LiveData<List<Wallpaper>> getCategoryWallpapers(String category){
         return wallpaperDAO.getCategoryWallpapers(category);
     }
 
-    public LiveData<Wallpaper> getFavoriteWallpapers(){
+    public LiveData<List<Wallpaper>> getFavoriteWallpapers(){
         return wallpaperDAO.getFavoriteWallpapers();
     }
 
-    public LiveData<Wallpaper> getDownloadedWallpapers(){
+    public LiveData<List<Wallpaper>> getDownloadedWallpapers(){
         return wallpaperDAO.getDownloadedWallpapers();
     }
 

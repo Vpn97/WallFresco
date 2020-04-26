@@ -66,7 +66,7 @@ public class WallpaperFragment extends Fragment {
     }
 
     private void setEvent() {
-        model.getWallpaperLiveData().observe(getViewLifecycleOwner(),listWallpaper->{
+        model.getAllWallpaper().observe(getViewLifecycleOwner(),listWallpaper->{
             mBinding.wallpaperFragmentLoading.setVisibility(View.GONE);
             wallpapers.addAll(listWallpaper);
             adapter.notifyDataSetChanged();

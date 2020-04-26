@@ -12,6 +12,7 @@ import androidx.room.Update;
 
 import com.apkzube.wallfresco.db.entity.Wallpaper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -36,13 +37,13 @@ public interface WallpaperDAO {
     public LiveData<Wallpaper> getWallpaper(String wallpaperId);
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_favorite= 1")
-    public LiveData<Wallpaper> getFavoriteWallpapers();
+    public LiveData<List<Wallpaper>> getFavoriteWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded= 1")
-    public LiveData<Wallpaper> getDownloadedWallpapers();
+    public LiveData<List<Wallpaper>> getDownloadedWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE category==:category")
-    public LiveData<Wallpaper> getCategoryWallpapers(String category);
+    public LiveData<List<Wallpaper>> getCategoryWallpapers(String category);
 
     @Query("SELECT * FROM wallpaper_mst limit :mLimit")
     public LiveData<List<Wallpaper>> getWallpapers(int mLimit);

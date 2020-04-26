@@ -46,6 +46,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.apkzube.wallfresco.R;
 import com.apkzube.wallfresco.databinding.ActivitySetWallpaperBinding;
 import com.apkzube.wallfresco.db.entity.Wallpaper;
+import com.apkzube.wallfresco.db.repo.WallRepository;
 import com.apkzube.wallfresco.util.Constant;
 import com.apkzube.wallfresco.viewmodel.SetWallpaperViewModel;
 import com.bumptech.glide.Glide;
@@ -99,12 +100,12 @@ public class SetWallpaper extends AppCompatActivity {
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
-        mWallpaper=getIntent().getParcelableExtra(getString(R.string.wallpaper_obj_key));
+        mWallpaper = getIntent().getParcelableExtra(getString(R.string.wallpaper_obj_key));
 
-        model= ViewModelProviders.of(this).get(SetWallpaperViewModel.class);
+        model = ViewModelProviders.of(this).get(SetWallpaperViewModel.class);
         model.setApplication(getApplication());
         model.getWallpaperLiveData().setValue(mWallpaper);
-        mBinding= DataBindingUtil.setContentView(this,R.layout.activity_set_wallpaper);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_set_wallpaper);
         mBinding.setModel(model);
 
         allocation();
@@ -119,9 +120,10 @@ public class SetWallpaper extends AppCompatActivity {
         btnFavorite = mBinding.btnFavorite;
         btnShare = mBinding.btnShare;
         btnSetwallpaper = mBinding.btnSetwallpaper;
-        imgWallpaper=mBinding.imgSetWallpaper;
+        imgWallpaper = mBinding.imgSetWallpaper;
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         progressBar = mBinding.progressBar;
+        setFavoriteButtonUI(mWallpaper);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -150,7 +152,6 @@ public class SetWallpaper extends AppCompatActivity {
                     }
                 })
                 .into(imgWallpaper);
-
 
 
         // set wallpaper when btnSet click
@@ -221,7 +222,17 @@ public class SetWallpaper extends AppCompatActivity {
 
 
         // TODO save favorite wallpaper into room
-        btnFavorite.setOnClickListener(view -> vibrator.vibrate(50));
+        btnFavorite.setOnClickListener(view -> {
+            WallRepository repository = new WallRepository(getApplication());
+            if (mWallpaper.isFavorite()) {
+                mWallpaper.setFavorite(false);
+            } else {
+                mWallpaper.setFavorite(true);
+            }
+            repository.updateWallpaper(mWallpaper);
+            setFavoriteButtonUI(mWallpaper);
+            vibrator.vibrate(50);
+        });
 
      /*   btnDownload.setOnClickListener(view -> {
             final PopupMenu menu = new PopupMenu(getApplicationContext(), btnDownload, Gravity.NO_GRAVITY);
@@ -268,13 +279,13 @@ public class SetWallpaper extends AppCompatActivity {
             });
         });*/
 
-       //btnDownload.setOnClickListener(view -> downloadWallpaperDialog());
-       btnDownload.setOnClickListener(view -> downloadPopupWindow());
+        //btnDownload.setOnClickListener(view -> downloadWallpaperDialog());
+        btnDownload.setOnClickListener(view -> downloadPopupWindow());
 
     }
 
 
-    public void downloadWallpaperDialog(){
+    public void downloadWallpaperDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(SetWallpaper.this);
         final View dialogView = LayoutInflater.from(SetWallpaper.this).inflate(R.layout.diaload_download_wallpaper, null);
         builder.setView(dialogView);
@@ -282,10 +293,10 @@ public class SetWallpaper extends AppCompatActivity {
         dialogDownload.show();
         dialogDownload.setCancelable(true);
 
-        LinearLayout btnMedium,btnOriginal,btnLarge;
-        btnMedium=dialogView.findViewById(R.id.btnMedium);
-        btnOriginal=dialogView.findViewById(R.id.btnOriginal);
-        btnLarge=dialogView.findViewById(R.id.btnLarge);
+        LinearLayout btnMedium, btnOriginal, btnLarge;
+        btnMedium = dialogView.findViewById(R.id.btnMedium);
+        btnOriginal = dialogView.findViewById(R.id.btnOriginal);
+        btnLarge = dialogView.findViewById(R.id.btnLarge);
 
         btnMedium.setOnClickListener(this::onDownloadBtnClick);
         btnOriginal.setOnClickListener(this::onDownloadBtnClick);
@@ -293,8 +304,8 @@ public class SetWallpaper extends AppCompatActivity {
     }
 
 
-    public void onDownloadBtnClick(View view){
-        LinearLayout btn=(LinearLayout)view;
+    public void onDownloadBtnClick(View view) {
+        LinearLayout btn = (LinearLayout) view;
         String downloadURL = mWallpaper.getOriginal();
 
         final DownloadFileFromURL downloadFileFromURL = new DownloadFileFromURL();
@@ -330,7 +341,7 @@ public class SetWallpaper extends AppCompatActivity {
             downloadDialog.setMax(100);
 
             downloadFileFromURL.execute(downloadURL);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -386,45 +397,45 @@ public class SetWallpaper extends AppCompatActivity {
                                 @Override
                                 public void onResourceReady(@NonNull Bitmap mBitmap, @Nullable Transition<? super Bitmap> transition) {
 
-                                        try {
+                                    try {
 
-                                            Bitmap bitmap = getScaledBitmap(mBitmap);
+                                        Bitmap bitmap = getScaledBitmap(mBitmap);
 
-                                            if (mApply == Apply.HOMESCREEN_LOCKSCREEN) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                                    manager.setBitmap(
-                                                            bitmap, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
-                                                }
+                                        if (mApply == Apply.HOMESCREEN_LOCKSCREEN) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                manager.setBitmap(
+                                                        bitmap, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
                                             }
+                                        }
 
-                                            if (mApply == Apply.HOMESCREEN) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                                    manager.setBitmap(
-                                                            bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
-                                                }
-
+                                        if (mApply == Apply.HOMESCREEN) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                manager.setBitmap(
+                                                        bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
                                             }
-
-                                            if (mApply == Apply.LOCKSCREEN) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                                    manager.setBitmap(
-                                                            bitmap, null, true, WallpaperManager.FLAG_LOCK);
-                                                }
-                                            }
-
-                                            vibrator.vibrate(50);
-                                            setSuccessDialog();
-                                            progressBar.setVisibility(View.GONE);
-                                            btnShare.setVisibility(View.VISIBLE);
-                                            mApply = null;
-                                        } catch (Exception e) {
-                                            Toast.makeText(SetWallpaper.this, "Fail to set Wallpaper", Toast.LENGTH_SHORT).show();
-                                            Log.d(Constant.TAG, "onResourceReady: " + e.getMessage());
-                                            setFailDialog();
-                                            progressBar.setVisibility(View.GONE);
-                                            btnShare.setVisibility(View.VISIBLE);
 
                                         }
+
+                                        if (mApply == Apply.LOCKSCREEN) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                manager.setBitmap(
+                                                        bitmap, null, true, WallpaperManager.FLAG_LOCK);
+                                            }
+                                        }
+
+                                        vibrator.vibrate(50);
+                                        setSuccessDialog();
+                                        progressBar.setVisibility(View.GONE);
+                                        btnShare.setVisibility(View.VISIBLE);
+                                        mApply = null;
+                                    } catch (Exception e) {
+                                        Toast.makeText(SetWallpaper.this, "Fail to set Wallpaper", Toast.LENGTH_SHORT).show();
+                                        Log.d(Constant.TAG, "onResourceReady: " + e.getMessage());
+                                        setFailDialog();
+                                        progressBar.setVisibility(View.GONE);
+                                        btnShare.setVisibility(View.VISIBLE);
+
+                                    }
                                 }
                             });
 
@@ -532,7 +543,7 @@ public class SetWallpaper extends AppCompatActivity {
                 });
     }
 
-    class  DownloadFileFromURL extends AsyncTask<String, String, String> {
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
         /**
          * Before starting background thread
          * Show Progress Bar Dialog
@@ -636,22 +647,22 @@ public class SetWallpaper extends AppCompatActivity {
     }
 
 
-    public void downloadPopupWindow(){
+    public void downloadPopupWindow() {
         //Create a View object yourself through inflater
-        LayoutInflater inflater=getLayoutInflater();
+        LayoutInflater inflater = getLayoutInflater();
         View popupView = inflater.inflate(R.layout.diaload_download_wallpaper, null);
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        window=new PopupWindow(popupView,width,height,true);
+        window = new PopupWindow(popupView, width, height, true);
         window.showAtLocation(mBinding.getRoot(), Gravity.CENTER, 0, 0);
         window.setAnimationStyle(R.style.Animation_Design_BottomSheetDialog);
 
-        ConstraintLayout conDismiss=popupView.findViewById(R.id.consDismiss);
-        LinearLayout btnMedium,btnOriginal,btnLarge;
-        btnMedium=popupView.findViewById(R.id.btnMedium);
-        btnOriginal=popupView.findViewById(R.id.btnOriginal);
-        btnLarge=popupView.findViewById(R.id.btnLarge);
+        ConstraintLayout conDismiss = popupView.findViewById(R.id.consDismiss);
+        LinearLayout btnMedium, btnOriginal, btnLarge;
+        btnMedium = popupView.findViewById(R.id.btnMedium);
+        btnOriginal = popupView.findViewById(R.id.btnOriginal);
+        btnLarge = popupView.findViewById(R.id.btnLarge);
 
         btnMedium.setOnClickListener(this::onDownloadBtnClick);
         btnOriginal.setOnClickListener(this::onDownloadBtnClick);
@@ -663,7 +674,7 @@ public class SetWallpaper extends AppCompatActivity {
     }
 
 
-     protected void openFile(final String fileName) {
+    protected void openFile(final String fileName) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(SetWallpaper.this);
         LayoutInflater inflater = LayoutInflater.from(SetWallpaper.this);
@@ -695,6 +706,13 @@ public class SetWallpaper extends AppCompatActivity {
 
     }
 
+    private void setFavoriteButtonUI(Wallpaper wallpaper)  {
+        if (wallpaper.isFavorite()) {
+            btnFavorite.setImageResource(R.drawable.ic_favorite_checked);
+        } else {
+            btnFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
+        }
+    }
     public enum Apply {
         LOCKSCREEN,
         HOMESCREEN,
