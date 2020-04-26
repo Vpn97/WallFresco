@@ -18,7 +18,6 @@ public class NetworkReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Boolean status = NetworkUtil.getConnectivityStatusString(context);
         if (!status) {
-
             listener.updateUI(false);
         }else {
 

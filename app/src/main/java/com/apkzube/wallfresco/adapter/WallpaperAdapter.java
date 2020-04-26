@@ -96,7 +96,10 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
 
             Glide.with(context)
                     .load(Uri.parse(wallpaper.getPortrait()))
-                    .thumbnail(0.1f)
+                    .thumbnail(Glide // this thumbnail request has to have the same RESULT cache key
+                            .with(context) // as the outer request, which usually simply means
+                            .load(Uri.parse(wallpaper.getPortrait())) // same size/transformation(e.g. centerCrop)/format(e.g. asBitmap)
+                            .fitCenter())
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -109,7 +112,6 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
                             return false;
                         }
                     })
-                    .useAnimationPool(true)
                     .into(mBinding.imgWallpaper);
         }
 

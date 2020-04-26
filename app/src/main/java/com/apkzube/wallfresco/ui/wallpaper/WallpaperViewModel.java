@@ -48,7 +48,7 @@ public class WallpaperViewModel extends AndroidViewModel{
     public void setWallpapers(){
         PexelsService service= PexelsServiceImpl.getService();
 
-        service.getWallpapers(CommonRestURL.getApiKEY(),"4k Wallpaper",CommonRestURL.PER_PAGE_WALLPAPER,10,"portrait")
+        service.getWallpapers(CommonRestURL.getApiKEY(),"Random Wallpaper",CommonRestURL.PER_PAGE_WALLPAPER,10,"portrait")
                 .enqueue(new Callback<PelexsResponse>() {
             @Override
             public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {

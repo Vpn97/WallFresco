@@ -137,7 +137,6 @@ public class SetWallpaper extends AppCompatActivity {
         //set wallpaper into image view
         Glide.with(this)
                 .load(Uri.parse(mWallpaper.getPortrait()))
-                .thumbnail(0.1f)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

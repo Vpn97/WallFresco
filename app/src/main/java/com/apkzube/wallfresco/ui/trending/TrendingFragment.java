@@ -66,6 +66,7 @@ public class TrendingFragment extends Fragment {
             animationTrending.setVisibility(View.GONE);
             wallpapers.clear();
             wallpapers.addAll(wallpapersList);
+            adapter.notifyDataSetChanged();
         });
     }
 }

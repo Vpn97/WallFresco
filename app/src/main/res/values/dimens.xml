@@ -6,4 +6,5 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="actionbar_size">56dp</dimen>
+    <dimen name="anim_padding">16dp</dimen>
 </resources>
