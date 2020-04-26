@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
-                app:lottie_rawRes="@raw/wallpeper_loading" />
+                app:lottie_rawRes="@raw/loading" />
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"

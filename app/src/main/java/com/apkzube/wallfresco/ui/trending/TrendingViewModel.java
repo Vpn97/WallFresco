@@ -37,11 +37,11 @@ public class TrendingViewModel extends AndroidViewModel {
 
     public LiveData<List<Wallpaper>> getTrendingWallpaper() {
         PexelsService service= PexelsServiceImpl.getService();
-        service.getTrendWallpapers(CommonRestURL.getApiKEY(),CommonRestURL.PER_PAGE_WALLPAPER,1)
+        service.getTrendWallpapers(CommonRestURL.getApiKEY(),CommonRestURL.PER_PAGE_TRENDING,1)
                 .enqueue(new Callback<PelexsResponse>() {
                     @Override
                     public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
-                        Log.d(Constant.TAG, "onResponse: "+new Gson().toJson(response.body()));
+                        Log.d(Constant.TAG, "onResponse: getTrendingWallpaper"+new Gson().toJson(response.body()));
 
                         if(null!=response && null!=response.body()) {
                             ArrayList<Wallpaper> wallpapers = ConverterUtil.convertResponseToEntityList(response.body());
@@ -51,13 +51,10 @@ public class TrendingViewModel extends AndroidViewModel {
 
                     @Override
                     public void onFailure(Call<PelexsResponse> call, Throwable t) {
-                        Log.d(Constant.TAG, "onFailure: "+new Gson().toJson(t));
+                        Log.d(Constant.TAG, "onFailure: getTrendingWallpaper"+new Gson().toJson(t));
                     }
                 });
         return wallpaperLivedata;
     }
-
-
-
 
 }

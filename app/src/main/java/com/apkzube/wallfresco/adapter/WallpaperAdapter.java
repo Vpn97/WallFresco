@@ -53,8 +53,6 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
     @Override
     public void onBindViewHolder(@NonNull WallpaperViewHolder holder, int position) {
         Wallpaper wallpaper=wallpapers.get(position);
-        Log.d(Constant.TAG, "onBindViewHolder: "+new Gson().toJson(wallpaper));
-
         holder.setData(wallpaper);
         holder.getmBinding().setWallpaper(wallpaper);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_recycler_item_show);
@@ -71,8 +69,6 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, SetWallpaper.class);
             intent.putExtra(context.getString(R.string.wallpaper_obj_key),wallpapers.get(position));
-           /* Gson gson = new Gson();
-            dataStorage.write(Common.CURRENT_WALLPAPER_KEY, gson.toJson(wallpaperArrayList.get(position), Wallpaper.class));*/
             context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation
                     ((Activity) context, holder.getmBinding().imgWallpaper, "img").toBundle());
 
@@ -84,7 +80,6 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
 
     @Override
     public int getItemCount() {
-        Log.d(Constant.TAG, "getItemCount: "+wallpapers.size());
         return wallpapers.size();
     }
 
@@ -105,6 +100,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            //mBinding.wallpaperLoading.setVisibility(View.INVISIBLE);
                             return false;
                         }
                         @Override
@@ -113,6 +109,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
                             return false;
                         }
                     })
+                    .useAnimationPool(true)
                     .into(mBinding.imgWallpaper);
         }
 

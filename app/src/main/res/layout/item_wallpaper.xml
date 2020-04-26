@@ -34,7 +34,7 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             android:scaleType="centerCrop"
-            app:lottie_rawRes="@raw/wallpeper_loading" />
+            app:lottie_rawRes="@raw/loading" />
 
     </androidx.cardview.widget.CardView>
 </layout>

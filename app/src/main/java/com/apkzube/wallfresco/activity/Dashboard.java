@@ -121,7 +121,7 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         params.setMargins(0, 0, 0, bottomNavigationView.getHeight());
         snack.getView().setLayoutParams(params);
 
-        networkReceiver = new NetworkReceiver(this);
+        networkReceiver = new NetworkReceiver( this);
         try {
             broadcastIntent();
         } catch (Exception e) {
@@ -160,6 +160,17 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
 
     public void broadcastIntent() {
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            broadcastIntent();
+        } catch (Exception e) {
+            Log.e(Constant.TAG, "onRequestPermissionsResult: ", e);
+        }
     }
 
     private void takePermission() {

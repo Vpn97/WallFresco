@@ -56,7 +56,6 @@ public class TrendingFragment extends Fragment {
                 LinearLayoutManager.VERTICAL);
         rvTrending.setLayoutManager(manager);
 
-        model.getTrendingWallpaper();
         wallpapers=new ArrayList<>();
         adapter=new WallpaperAdapter(mBinding.getRoot().getContext(),wallpapers);
         rvTrending.setAdapter(adapter);

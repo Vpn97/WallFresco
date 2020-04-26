@@ -14,7 +14,8 @@ public interface PexelsService {
     Call<PelexsResponse> getWallpapers(@Header("Authorization") String key ,
                                        @Query("query") String query,
                                        @Query("per_page") int imgPerPage,
-                                       @Query("page") int page);
+                                       @Query("page") int page,
+                                       @Query("orientation") String portrait);
 
     @GET(CommonRestURL.TRENDING__URL)
     Call<PelexsResponse> getTrendWallpapers(@Query("Authorization") String key ,

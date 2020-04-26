@@ -11,7 +11,6 @@ public class CommonRestURL {
     public  static  final String WALLPAPER__URL = "search";
     public  static  final String TRENDING__URL = "curated";
     public  static  final String PHOTO_URL = "photos";
-    public static final String API_KEY = "563492ad6f91700001000001d78ec715992c4698b6ab8aeccf983927";
 
     public static int SERVER_CALL_COUNT = 0;
 
