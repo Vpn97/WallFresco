@@ -3,6 +3,7 @@ package com.apkzube.wallfresco.db;
 
 import android.content.Context;
 
+import androidx.room.Dao;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -16,7 +17,7 @@ public abstract class WallpaperDataBase extends RoomDatabase {
 
     private static WallpaperDataBase instance;
 
-    public abstract WallpaperDAO getWallaperDAO();
+    public abstract WallpaperDAO getWallpaperDAO();
 
     public static synchronized WallpaperDataBase getInstance(Context context) {
         if (instance == null) {

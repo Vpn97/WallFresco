@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -16,8 +17,11 @@ import java.util.List;
 @Dao
 public interface WallpaperDAO {
 
-    @Insert
-    public void addWallpaper(Wallpaper wallpaper);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public void insertWallpaper(Wallpaper wallpaper);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public void insertAllWallpaper(List<Wallpaper> wallpapers);
 
     @Update
     public void updateWallpaper(Wallpaper wallpaper);
@@ -26,7 +30,7 @@ public interface WallpaperDAO {
     public  void deleteWallpaper(Wallpaper wallpaper);
 
     @Query("SELECT * FROM wallpaper_mst")
-    public List<Wallpaper> getAllWallpaper();
+    public LiveData<List<Wallpaper>> getAllWallpaper();
 
     @Query("SELECT * FROM wallpaper_mst WHERE id==:wallpaperId")
     public LiveData<Wallpaper> getWallpaper(String wallpaperId);
@@ -35,10 +39,14 @@ public interface WallpaperDAO {
     public LiveData<Wallpaper> getFavoriteWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded= 1")
-    public LiveData<Wallpaper> getDowloadedWallpapers();
+    public LiveData<Wallpaper> getDownloadedWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE category==:category")
     public LiveData<Wallpaper> getCategoryWallpapers(String category);
+
+    @Query("SELECT * FROM wallpaper_mst limit :mLimit")
+    public LiveData<List<Wallpaper>> getWallpapers(int mLimit);
+
 
 
 }
