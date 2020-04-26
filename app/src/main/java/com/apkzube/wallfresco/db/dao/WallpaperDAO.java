@@ -18,10 +18,10 @@ import java.util.List;
 @Dao
 public interface WallpaperDAO {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     public void insertWallpaper(Wallpaper wallpaper);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     public void insertAllWallpaper(List<Wallpaper> wallpapers);
 
     @Update

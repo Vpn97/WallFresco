@@ -23,12 +23,9 @@ import java.util.Date;
 @Entity(tableName = "wallpaper_mst")
 public class Wallpaper  extends BaseObservable  implements Parcelable {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name="wallpaper_id")
-    private int wallpaperId;
-
+    @PrimaryKey
     @ColumnInfo(name = "id")
-    private String id;
+    private int id;
 
     @ColumnInfo(name = "width")
     private String width;
@@ -96,8 +93,8 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
     //----------------
 
 
-    public Wallpaper(int wallpaperId, String id, String width, String height, String url, String photographer, String photographerUrl, String photographerId, boolean isFavorite, String category, String searchString, String original, String large2x, String large, String medium, String small, String portrait, String landscape, String tiny, boolean isDownloaded, Date createdDate) {
-        this.wallpaperId = wallpaperId;
+    public Wallpaper( int id, String width, String height, String url, String photographer, String photographerUrl, String photographerId, boolean isFavorite, String category, String searchString, String original, String large2x, String large, String medium, String small, String portrait, String landscape, String tiny, boolean isDownloaded, Date createdDate) {
+
         this.id = id;
         this.width = width;
         this.height = height;
@@ -126,8 +123,7 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
 
     @Ignore
     protected Wallpaper(Parcel in) {
-        wallpaperId = in.readInt();
-        id = in.readString();
+        id = in.readInt();
         width = in.readString();
         height = in.readString();
         url = in.readString();
@@ -151,8 +147,7 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
     @Override
     @Ignore
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(wallpaperId);
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(width);
         dest.writeString(height);
         dest.writeString(url);
@@ -192,21 +187,14 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
         }
     };
 
-    public int getWallpaperId() {
-        return wallpaperId;
-    }
-
-    public void setWallpaperId(int wallpaperId) {
-        this.wallpaperId = wallpaperId;
-    }
 
     @Bindable
-    public String getId() {
+    public int getId() {
         return id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = Integer.parseInt(id);
         notifyPropertyChanged(BR.id);
     }
 

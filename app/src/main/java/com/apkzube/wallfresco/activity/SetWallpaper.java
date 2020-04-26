@@ -521,7 +521,7 @@ public class SetWallpaper extends AppCompatActivity {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         try {
-                            String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), resource, wallpaper.getId(), wallpaper.getUrl());
+                            String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), resource, String.valueOf(wallpaper.getId()), wallpaper.getUrl());
                             Uri imgUri = Uri.parse(bitmapPath);
                             String sharingText = getResources().getString(R.string.share_image_text) + "\n\n" + getResources().getString(R.string.app_name) + "  : " + "https://play.google.com/store/apps/details?id=" + getPackageName();
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
