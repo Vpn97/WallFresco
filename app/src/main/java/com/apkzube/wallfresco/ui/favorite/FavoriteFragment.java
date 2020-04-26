@@ -64,7 +64,6 @@ public class FavoriteFragment extends Fragment {
 
     private void onAdapterChanged(List<Wallpaper> wallpapers) {
         favoriteAnimation.setVisibility(View.GONE);
-        favoriteWallpapersList.clear();
         favoriteWallpapersList.addAll(wallpapers);
         adapter.notifyDataSetChanged();
         updateUI(favoriteWallpapersList);

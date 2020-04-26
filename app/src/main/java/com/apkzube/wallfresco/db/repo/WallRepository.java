@@ -8,7 +8,6 @@ import com.apkzube.wallfresco.db.WallpaperDataBase;
 import com.apkzube.wallfresco.db.dao.WallpaperDAO;
 import com.apkzube.wallfresco.db.entity.Wallpaper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -71,6 +70,10 @@ public class WallRepository {
         return wallpaperDAO.getAllWallpaper();
     }
 
+    public LiveData<List<Wallpaper>> getPortraitWallpapers(){
+        return wallpaperDAO.getPortraitWallpapers();
+    }
+
     public LiveData<List<Wallpaper>> getLimitedWallpapers(int mLimit){
         return wallpaperDAO.getWallpapers(mLimit);
     }
@@ -89,6 +92,10 @@ public class WallRepository {
 
     public LiveData<Wallpaper> getWallpaper(String wallpaperId){
        return wallpaperDAO.getWallpaper(wallpaperId);
+    }
+
+    public LiveData<List<Wallpaper>> getTrendWallpapers(){
+        return wallpaperDAO.getTrendWallpapers();
     }
 
 }

@@ -1,13 +1,12 @@
 package com.apkzube.wallfresco.db.entity;
 
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
-import androidx.databinding.BindingAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -15,7 +14,6 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.apkzube.wallfresco.BR;
-import com.apkzube.wallfresco.R;
 import com.apkzube.wallfresco.util.DateTypeConverters;
 
 import java.util.Date;
@@ -85,6 +83,10 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
     @ColumnInfo(name = "is_downloaded")
     private boolean isDownloaded;
 
+    @ColumnInfo(name = "is_trending")
+    private boolean isTrending;
+
+
     @ColumnInfo(name = "created_date", defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(DateTypeConverters.class)
     private Date createdDate;
@@ -93,7 +95,7 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
     //----------------
 
 
-    public Wallpaper( int id, String width, String height, String url, String photographer, String photographerUrl, String photographerId, boolean isFavorite, String category, String searchString, String original, String large2x, String large, String medium, String small, String portrait, String landscape, String tiny, boolean isDownloaded, Date createdDate) {
+    public Wallpaper( int id, String width, String height, String url, String photographer, String photographerUrl, String photographerId, boolean isFavorite, String category, String searchString, String original, String large2x, String large, String medium, String small, String portrait, String landscape, String tiny, boolean isDownloaded, Date createdDate,boolean isTrending) {
 
         this.id = id;
         this.width = width;
@@ -115,6 +117,7 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
         this.tiny = tiny;
         this.isDownloaded = isDownloaded;
         this.createdDate = createdDate;
+        this.isTrending=isTrending;
     }
 
     @Ignore
@@ -142,6 +145,7 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
         landscape = in.readString();
         tiny = in.readString();
         isDownloaded = in.readByte() != 0;
+        isTrending=in.readByte() != 0;
     }
 
     @Override
@@ -166,6 +170,7 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
         dest.writeString(landscape);
         dest.writeString(tiny);
         dest.writeByte((byte) (isDownloaded ? 1 : 0));
+        dest.writeByte((byte) (isTrending ? 1 : 0));
     }
 
     @Override
@@ -195,6 +200,11 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
 
     public void setId(String id) {
         this.id = Integer.parseInt(id);
+        notifyPropertyChanged(BR.id);
+    }
+
+    public void setId(int id) {
+        this.id = id;
         notifyPropertyChanged(BR.id);
     }
 
@@ -390,7 +400,31 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
         notifyPropertyChanged(BR.createdDate);
     }
 
-/*
+    @Bindable
+    public boolean isTrending() {
+        return isTrending;
+    }
+
+    public void setTrending(boolean trending) {
+        isTrending = trending;
+        notifyPropertyChanged(BR.trending);
+    }
+
+
+    public static final DiffUtil.ItemCallback<Wallpaper> CALLBACK=new DiffUtil.ItemCallback<Wallpaper>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Wallpaper oldItem, @NonNull Wallpaper newItem) {
+            return oldItem.getId()==newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Wallpaper oldItem, @NonNull Wallpaper newItem) {
+            return oldItem.getId()==newItem.getId();
+        }
+    };
+
+
+    /*
     @BindingAdapter(value={"isFavorite"}, requireAll=false)
     public void bindSrcCompat(ImageView imageView,boolean isFavorite){
         // Your setter code goes here, like setDrawable or similar

@@ -16,35 +16,25 @@ import android.view.animation.AnimationUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.DiffUtil;
+import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apkzube.wallfresco.R;
 import com.apkzube.wallfresco.activity.SetWallpaper;
 import com.apkzube.wallfresco.databinding.ItemWallpaperBinding;
 import com.apkzube.wallfresco.db.entity.Wallpaper;
-import com.apkzube.wallfresco.util.WallpaperDiffCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import java.util.ArrayList;
-
-public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.WallpaperViewHolder> {
+public class WallpaperPagedAdapter extends PagedListAdapter<Wallpaper,WallpaperPagedAdapter.WallpaperViewHolder> {
     Context context;
-    ArrayList<Wallpaper> wallpapers;
 
-    public WallpaperAdapter(Context context, ArrayList<Wallpaper> wallpapers) {
+    public WallpaperPagedAdapter(Context context) {
+        super(Wallpaper.CALLBACK);
         this.context = context;
-        this.wallpapers = wallpapers;
-    }
-
-    public void setWallpapers(ArrayList<Wallpaper> newWallpapers){
-        final DiffUtil.DiffResult result=DiffUtil.calculateDiff(new WallpaperDiffCallback(wallpapers,newWallpapers));
-        wallpapers.addAll(newWallpapers);
-        result.dispatchUpdatesTo(WallpaperAdapter.this);
     }
 
     @NonNull
@@ -56,7 +46,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
 
     @Override
     public void onBindViewHolder(@NonNull WallpaperViewHolder holder, int position) {
-        Wallpaper wallpaper=wallpapers.get(position);
+        Wallpaper wallpaper=getItem(position);
         holder.setData(wallpaper);
         holder.getmBinding().setWallpaper(wallpaper);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_recycler_item_show);
@@ -72,7 +62,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, SetWallpaper.class);
-            intent.putExtra(context.getString(R.string.wallpaper_obj_key),wallpapers.get(position));
+            intent.putExtra(context.getString(R.string.wallpaper_obj_key),getItem(position));
             context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation
                     ((Activity) context, holder.getmBinding().imgWallpaper, "img").toBundle());
 
@@ -81,12 +71,6 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Wall
 
         // TODO holder click listener
     }
-
-    @Override
-    public int getItemCount() {
-        return wallpapers.size();
-    }
-
 
     class WallpaperViewHolder extends RecyclerView.ViewHolder{
         private ItemWallpaperBinding mBinding;

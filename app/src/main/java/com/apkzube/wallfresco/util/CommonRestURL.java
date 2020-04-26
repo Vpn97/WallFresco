@@ -16,6 +16,7 @@ public class CommonRestURL {
 
     public static final int PER_PAGE_TRENDING = 40;
     public static final int PER_PAGE_WALLPAPER = 80;
+    public static final int PER_PAGE_CATEGORY=80;
     public static final int PER_PAGE_CHIP_WALLPAPER = 40;
 
 

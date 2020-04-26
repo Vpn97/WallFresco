@@ -1,7 +1,6 @@
 package com.apkzube.wallfresco.ui.wallpaper;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,24 +8,26 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.apkzube.wallfresco.R;
 import com.apkzube.wallfresco.adapter.WallpaperAdapter;
+import com.apkzube.wallfresco.adapter.WallpaperPagedAdapter;
 import com.apkzube.wallfresco.databinding.FragmentWallpaperBinding;
 import com.apkzube.wallfresco.db.entity.Wallpaper;
-import com.apkzube.wallfresco.util.Constant;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class WallpaperFragment extends Fragment {
+public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedChangeListener {
 
     private WallpaperViewModel model;
     private RecyclerView rvWallpaper;
@@ -35,6 +36,13 @@ public class WallpaperFragment extends Fragment {
     private ArrayList<String> category;
     private WallpaperAdapter adapter;
     private ArrayList<Wallpaper> wallpapers;
+    private Chip currentChip;
+    private String currentChipText;
+    private Observer<List<Wallpaper>> mainWallpaperObserver;
+
+    //pagination
+    private PagedList<Wallpaper>  wallpaperPagedList;
+    private WallpaperPagedAdapter  pagedAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        // rootView = inflater.inflate(R.layout.fragment_wallpaper, container, false);
@@ -55,23 +63,33 @@ public class WallpaperFragment extends Fragment {
                 LinearLayoutManager.VERTICAL);
         rvWallpaper.setLayoutManager(manager);
 
-        model.setWallpapers();
+        //model.getWallpaperWeb();
         wallpapers=new ArrayList<>();
         adapter=new WallpaperAdapter(mBinding.getRoot().getContext(),wallpapers);
-        rvWallpaper.setAdapter(adapter);
+       // rvWallpaper.setAdapter(adapter);
 
         category = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.wallpaper_category)));
         setCategoryChips(category);
 
+        //pagination
+        pagedAdapter=new WallpaperPagedAdapter(mBinding.getRoot().getContext());
+        rvWallpaper.setAdapter(pagedAdapter);
     }
 
     private void setEvent() {
-        model.getAllWallpaper().observe(getViewLifecycleOwner(),listWallpaper->{
-            mBinding.wallpaperFragmentLoading.setVisibility(View.GONE);
-            wallpapers.clear();
-            wallpapers.addAll(listWallpaper);
-            adapter.notifyDataSetChanged();
-        } );
+       // mainWallpaperObserver= this::updateAdapter;
+       // model.getAllWallpaper().observe(getViewLifecycleOwner(),mainWallpaperObserver);
+        chipsCategory.setOnCheckedChangeListener(this);
+
+
+        //new pagination
+        model.getWallpaperPagedList().observe(getViewLifecycleOwner(), wallpaperLiveData -> {
+                mBinding.wallpaperFragmentLoading.setVisibility(View.GONE);
+                wallpaperPagedList=wallpaperLiveData;
+                pagedAdapter.submitList(wallpaperPagedList);
+
+        });
+
     }
 
     private void setCategoryChips(ArrayList<String> categories) {
@@ -81,4 +99,37 @@ public class WallpaperFragment extends Fragment {
             chipsCategory.addView(mChip);
         }
     }
+
+    @Override
+    public void onCheckedChanged(ChipGroup chipGroup, int chipId) {
+
+       /* wallpapers.clear();
+        if(currentChipText!=null || !TextUtils.isEmpty(currentChipText)) {
+            model.getCategoryWallpaper(currentChipText).removeObservers(getViewLifecycleOwner());
+        }
+
+        if (chipId == View.NO_ID) {
+            model.getAllWallpaper().observe(getViewLifecycleOwner(),mainWallpaperObserver);
+        }else{
+            model.getAllWallpaper().removeObservers(getViewLifecycleOwner());
+            mBinding.wallpaperFragmentLoading.setVisibility(View.VISIBLE);
+            currentChip = chipGroup.findViewById(chipId);
+            currentChipText = String.valueOf(currentChip.getText());
+            model.getCategoryWallpaperWeb(currentChipText,1);
+            wallpapers.clear();
+            adapter.notifyDataSetChanged();
+            model.getCategoryWallpaper(currentChipText).observe(getViewLifecycleOwner(), this::updateAdapter);
+        }*/
+    }
+
+
+    public void updateAdapter(List<Wallpaper> listWallpaper){
+        if(listWallpaper.size()>0) {
+            mBinding.wallpaperFragmentLoading.setVisibility(View.GONE);
+        }
+        wallpapers.clear();
+        wallpapers.addAll(listWallpaper);
+        adapter.notifyDataSetChanged();
+    }
+
 }

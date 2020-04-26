@@ -2,7 +2,6 @@ package com.apkzube.wallfresco.db.dao;
 
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -12,7 +11,6 @@ import androidx.room.Update;
 
 import com.apkzube.wallfresco.db.entity.Wallpaper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -30,8 +28,16 @@ public interface WallpaperDAO {
     @Delete
     public  void deleteWallpaper(Wallpaper wallpaper);
 
-    @Query("SELECT * FROM wallpaper_mst")
+    @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND category is null")
     public LiveData<List<Wallpaper>> getAllWallpaper();
+
+
+    @Query("SELECT * FROM wallpaper_mst WHERE is_trending=1")
+    public LiveData<List<Wallpaper>> getTrendWallpapers();
+
+    @Query("SELECT * FROM wallpaper_mst WHERE CAST(width AS INT) < CAST(height AS INT) AND is_trending=0 AND category is null")
+    public LiveData<List<Wallpaper>> getPortraitWallpapers();
+
 
     @Query("SELECT * FROM wallpaper_mst WHERE id==:wallpaperId")
     public LiveData<Wallpaper> getWallpaper(String wallpaperId);

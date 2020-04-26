@@ -1,13 +1,10 @@
 package com.apkzube.wallfresco.util;
 
-import androidx.room.TypeConverter;
-
 import com.apkzube.wallfresco.db.entity.Wallpaper;
 import com.apkzube.wallfresco.response.PelexsResponse;
 import com.apkzube.wallfresco.response.WallpaperResponse;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ConverterUtil {
 
@@ -41,5 +38,34 @@ public class ConverterUtil {
         }
         return wallpapers;
      }
+
+     public static ArrayList<Wallpaper> filerPortraitWallpaper(ArrayList<Wallpaper> wallpapers){
+         int w=0,h=0;
+         for (Wallpaper wallpaper:wallpapers) {
+             if(wallpaper !=null) {
+                 w = Integer.parseInt(wallpaper.getWidth());
+                 h = Integer.parseInt(wallpaper.getHeight());
+                 if (w > h) {
+                     wallpapers.remove(wallpaper);
+                 }
+             }
+         }
+         return wallpapers;
+     }
+
+
+    public static ArrayList<Wallpaper> setTrendWallpaper(ArrayList<Wallpaper> wallpapers){
+        for (Wallpaper wallpaper:wallpapers) {
+            wallpaper.setTrending(true);
+        }
+        return wallpapers;
+    }
+
+    public static ArrayList<Wallpaper> setWallpaperCategory(ArrayList<Wallpaper> wallpapers,String category){
+        for (Wallpaper wallpaper:wallpapers) {
+            wallpaper.setCategory(category);
+        }
+        return wallpapers;
+    }
 
 }
