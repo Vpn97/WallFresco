@@ -7,29 +7,30 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
-import com.apkzube.wallfresco.service.PexelsService;
+import com.apkzube.wallfresco.db.entity.Wallpaper;
+import com.apkzube.wallfresco.db.repo.WallRepository;
 
 public class WallpaperDataSourceFactory extends DataSource.Factory {
-    private PexelsService service;
-    private WallpaperDataSource dataSource;
+    private WallRepository repository;
+    private DataSource<Integer,Wallpaper> dataSource;
     private Application application;
-    private MutableLiveData<WallpaperDataSource> sourceMutableLiveData;
+    private MutableLiveData<DataSource<Integer, Wallpaper>> sourceMutableLiveData;
 
-    public WallpaperDataSourceFactory(PexelsService service, Application application) {
-        this.service = service;
+    public WallpaperDataSourceFactory(WallRepository repository, Application application) {
         this.application = application;
+        this.repository=new WallRepository(application);
         this.sourceMutableLiveData=new MutableLiveData<>();
     }
 
     @NonNull
     @Override
-    public DataSource create() {
-        dataSource=new WallpaperDataSource(service,application);
+    public DataSource<Integer,Wallpaper> create() {
+       // dataSource=repository.getAllPagedWallpaper();
         sourceMutableLiveData.postValue(dataSource);
         return dataSource;
     }
 
-    public MutableLiveData<WallpaperDataSource> getSourceMutableLiveData() {
+    public MutableLiveData<DataSource<Integer,Wallpaper>> getSourceMutableLiveData() {
         return sourceMutableLiveData;
     }
 }

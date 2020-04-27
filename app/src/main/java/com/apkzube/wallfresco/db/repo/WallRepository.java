@@ -3,6 +3,7 @@ package com.apkzube.wallfresco.db.repo;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 
 import com.apkzube.wallfresco.db.WallpaperDataBase;
 import com.apkzube.wallfresco.db.dao.WallpaperDAO;
@@ -98,4 +99,7 @@ public class WallRepository {
         return wallpaperDAO.getTrendWallpapers();
     }
 
+    public DataSource.Factory<Integer, Wallpaper> getAllPagedWallpaper() {
+        return wallpaperDAO.getAllPagedWallpaper();
+    }
 }

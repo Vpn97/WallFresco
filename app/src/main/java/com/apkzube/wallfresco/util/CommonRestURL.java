@@ -12,6 +12,7 @@ public class CommonRestURL {
     public  static  final String TRENDING__URL = "curated";
     public  static  final String PHOTO_URL = "photos";
 
+
     public static int SERVER_CALL_COUNT = 0;
 
     public static final int PER_PAGE_TRENDING = 40;
@@ -32,9 +33,33 @@ public class CommonRestURL {
             "563492ad6f91700001000001be202c2c95dd4e0794ea2cb87d09ff98",
             "563492ad6f91700001000001155e4b7ee29845fd92d52abc6f10c72f"};
 
+    private static final String[] SEARCH = {
+            "Random Wallpaper",
+            "Mobile Wallpaper",
+            "Hd Wallpaper",
+            "Animal Wallpaper",
+            "Nature",
+            "Sky",
+            "Mountain"
+    };
+
+
+
+
+
     public static String getApiKEY() {
         Random random = new Random();
         return API_KEYS[random.nextInt(API_KEYS.length)];
+    }
+
+    public static String getRandomSearch() {
+        Random random = new Random();
+        return SEARCH[random.nextInt(SEARCH.length)];
+    }
+
+    public static int getRandomPage() {
+        Random random = new Random();
+        return random.nextInt(9)+1;
     }
 
 }

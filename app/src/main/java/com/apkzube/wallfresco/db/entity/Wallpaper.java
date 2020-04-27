@@ -87,6 +87,8 @@ public class Wallpaper  extends BaseObservable  implements Parcelable {
     private boolean isTrending;
 
 
+
+
     @ColumnInfo(name = "created_date", defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(DateTypeConverters.class)
     private Date createdDate;

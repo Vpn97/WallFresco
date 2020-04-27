@@ -1,7 +1,7 @@
 package com.apkzube.wallfresco.db.dao;
 
-
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -30,6 +30,10 @@ public interface WallpaperDAO {
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND category is null")
     public LiveData<List<Wallpaper>> getAllWallpaper();
+
+
+    @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND category is null order by created_date")
+    public DataSource.Factory<Integer,Wallpaper> getAllPagedWallpaper();
 
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_trending=1")
