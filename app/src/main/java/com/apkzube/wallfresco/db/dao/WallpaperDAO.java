@@ -46,7 +46,7 @@ public interface WallpaperDAO {
     @Query("SELECT * FROM wallpaper_mst WHERE id==:wallpaperId")
     public LiveData<Wallpaper> getWallpaper(String wallpaperId);
 
-    @Query("SELECT * FROM wallpaper_mst WHERE is_favorite= 1")
+    @Query("SELECT * FROM wallpaper_mst WHERE is_favorite=1")
     public LiveData<List<Wallpaper>> getFavoriteWallpapers();
 
     @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded= 1")

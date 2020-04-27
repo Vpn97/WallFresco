@@ -42,7 +42,7 @@ public class WallpaperViewModel extends AndroidViewModel{
                 .setEnablePlaceholders(true)
                 .setInitialLoadSizeHint(CommonRestURL.PER_PAGE_WALLPAPER)
                 .setPageSize(CommonRestURL.PER_PAGE_WALLPAPER)
-                .setPrefetchDistance(4)
+                .setPrefetchDistance(2)
                 .build();
 
         WallpaperBoundaryCallback boundaryCallback=new WallpaperBoundaryCallback(repository,service);
