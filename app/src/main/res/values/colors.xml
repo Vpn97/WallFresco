@@ -19,4 +19,6 @@
 
     <color name="btn_favorite_unchecked_color">#F4511E</color>
     <color name="dialog_backgroud_color">#94000000</color>
+    <color name="green">#209C25</color>
+    <color name="red">#FF1744</color>
 </resources>

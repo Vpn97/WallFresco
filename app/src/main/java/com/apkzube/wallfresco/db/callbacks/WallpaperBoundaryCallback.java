@@ -63,6 +63,7 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
                     @Override
                     public void onFailure(Call<PelexsResponse> call, Throwable t) {
                         Log.d(Constant.TAG, "onFailure: " + new Gson().toJson(t));
+                        loadData();
                     }
                 });
     }

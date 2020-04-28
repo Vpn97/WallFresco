@@ -4,20 +4,20 @@ import java.util.Random;
 
 public class CommonRestURL {
 
-    public static final String BASE_URL="https://api.pexels.com/v1/";
+    public static final String BASE_URL = "https://api.pexels.com/v1/";
 
     //pixel  urls
 
-    public  static  final String WALLPAPER__URL = "search";
-    public  static  final String TRENDING__URL = "curated";
-    public  static  final String PHOTO_URL = "photos";
+    public static final String WALLPAPER__URL = "search";
+    public static final String TRENDING__URL = "curated";
+    public static final String PHOTO_URL = "photos";
 
 
     public static int SERVER_CALL_COUNT = 0;
 
     public static final int PER_PAGE_TRENDING = 40;
     public static final int PER_PAGE_WALLPAPER = 80;
-    public static final int PER_PAGE_CATEGORY=80;
+    public static final int PER_PAGE_CATEGORY = 80;
     public static final int PER_PAGE_CHIP_WALLPAPER = 40;
 
 
@@ -40,11 +40,21 @@ public class CommonRestURL {
             "Animal Wallpaper",
             "Nature",
             "Sky",
-            "Mountain"
+            "Mountain",
+            "Army",
+            "Beach",
+            "Bikes & Motorcycle",
+            "Brands",
+            "Buildings And Architecture",
+            "Brand",
+            "Movies Wallpapers",
+            "Technology Wallpapers",
+            "Girls and Model Wallpapers",
+            "3D Wallpapers",
+            "Love Wallpaper",
+            "Mixed Wallpapers", "Traditional Wallpaper", "Non-Woven wallpaper", "Black Wallpaper", "AMOLED", "Food", "Flower Wallpaper", "Space Wallpaper"
+
     };
-
-
-
 
 
     public static String getApiKEY() {
@@ -59,7 +69,7 @@ public class CommonRestURL {
 
     public static int getRandomPage() {
         Random random = new Random();
-        return random.nextInt(9)+1;
+        return random.nextInt(9) + 1;
     }
 
 }

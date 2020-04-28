@@ -10,7 +10,9 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,19 +21,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
-
-import com.apkzube.wallfresco.R;
-import com.apkzube.wallfresco.databinding.ActivityDashboardBinding;
-import com.apkzube.wallfresco.ui.favorite.FavoriteFragment;
-import com.apkzube.wallfresco.ui.trending.TrendingFragment;
-import com.apkzube.wallfresco.ui.wallpaper.WallpaperFragment;
-import com.apkzube.wallfresco.util.BroadcastListener;
-import com.apkzube.wallfresco.util.Constant;
-import com.apkzube.wallfresco.util.DataStorage;
-import com.apkzube.wallfresco.util.NetworkReceiver;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -45,6 +34,19 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.apkzube.wallfresco.R;
+import com.apkzube.wallfresco.databinding.ActivityDashboardBinding;
+import com.apkzube.wallfresco.ui.favorite.FavoriteFragment;
+import com.apkzube.wallfresco.ui.trending.TrendingFragment;
+import com.apkzube.wallfresco.ui.wallpaper.WallpaperFragment;
+import com.apkzube.wallfresco.util.BroadcastListener;
+import com.apkzube.wallfresco.util.Constant;
+import com.apkzube.wallfresco.util.DataStorage;
+import com.apkzube.wallfresco.util.NetworkReceiver;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 public class Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BroadcastListener {
 
@@ -116,10 +118,15 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         mBinding.navView.setNavigationItemSelectedListener(this);
 
         //set Snack bar for Internet Connection
-        snack = Snackbar.make(mBinding.appBarDashboard.conLayout, getString(R.string.no_internet_msg), Snackbar.LENGTH_LONG);
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snack.getView().getLayoutParams();
-        params.setMargins(0, 0, 0, bottomNavigationView.getHeight());
+        snack = Snackbar.make(mBinding.appBarDashboard.conLayout, getString(R.string.no_internet_msg), Snackbar.LENGTH_INDEFINITE);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
+                snack.getView().getLayoutParams();
+        params.setAnchorId(bottomNavigationView.getId());
+        params.anchorGravity = Gravity.TOP;
+        params.gravity = Gravity.TOP;
         snack.getView().setLayoutParams(params);
+        snack.setTextColor(getResources().getColor(android.R.color.white));
+        snack.getView().setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         networkReceiver = new NetworkReceiver( this);
         try {
@@ -280,11 +287,16 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         if (isInternet) {
 
             if (snack.isShown()) {
-                snack.dismiss();
+                snack.setText("online now");
+                snack.getView().setBackgroundColor(getResources().getColor(R.color.green));
+                (new Handler()).postDelayed(()->{snack.dismiss();}, 3000);
+
                 Log.d(Constant.TAG, "updateUI: dismiss");
             }
 
         } else {
+            snack.getView().setBackgroundColor(getResources().getColor(R.color.red));
+            snack.setText("No connection");
             if (!snack.isShown())
                 snack.show();
             Log.d(Constant.TAG, "updateUI: show");
