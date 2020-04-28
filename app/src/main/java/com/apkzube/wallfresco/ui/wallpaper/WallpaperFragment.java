@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.apkzube.wallfresco.R;
-import com.apkzube.wallfresco.adapter.WallpaperAdapter;
 import com.apkzube.wallfresco.adapter.WallpaperPagedAdapter;
 import com.apkzube.wallfresco.databinding.FragmentWallpaperBinding;
 import com.apkzube.wallfresco.db.entity.Wallpaper;
@@ -25,7 +23,6 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedChangeListener {
 
@@ -34,18 +31,12 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
     private FragmentWallpaperBinding mBinding;
     private ChipGroup chipsCategory;
     private ArrayList<String> category;
-    private WallpaperAdapter adapter;
-    private ArrayList<Wallpaper> wallpapers;
-    private Chip currentChip;
-    private String currentChipText;
-    private Observer<List<Wallpaper>> mainWallpaperObserver;
 
     //pagination
     private PagedList<Wallpaper>  wallpaperPagedList;
     private WallpaperPagedAdapter  pagedAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       // rootView = inflater.inflate(R.layout.fragment_wallpaper, container, false);
         mBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_wallpaper,container,false);
 
         allocation();
@@ -63,11 +54,6 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
                 LinearLayoutManager.VERTICAL);
         rvWallpaper.setLayoutManager(manager);
 
-        //model.getWallpaperWeb();
-        wallpapers=new ArrayList<>();
-        adapter=new WallpaperAdapter(mBinding.getRoot().getContext(),wallpapers);
-       // rvWallpaper.setAdapter(adapter);
-
         category = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.wallpaper_category)));
         setCategoryChips(category);
 
@@ -77,10 +63,7 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
     }
 
     private void setEvent() {
-       // mainWallpaperObserver= this::updateAdapter;
-       // model.getAllWallpaper().observe(getViewLifecycleOwner(),mainWallpaperObserver);
         chipsCategory.setOnCheckedChangeListener(this);
-
 
         //new pagination
         model.getWallpaperPagedList().observe(getViewLifecycleOwner(), wallpaperLiveData -> {
@@ -120,16 +103,6 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
             adapter.notifyDataSetChanged();
             model.getCategoryWallpaper(currentChipText).observe(getViewLifecycleOwner(), this::updateAdapter);
         }*/
-    }
-
-
-    public void updateAdapter(List<Wallpaper> listWallpaper){
-        if(listWallpaper.size()>0) {
-            mBinding.wallpaperFragmentLoading.setVisibility(View.GONE);
-        }
-        wallpapers.clear();
-        wallpapers.addAll(listWallpaper);
-        adapter.notifyDataSetChanged();
     }
 
 }

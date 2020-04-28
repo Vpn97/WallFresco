@@ -81,7 +81,7 @@ public class WallpaperPagedAdapter extends PagedListAdapter<Wallpaper,WallpaperP
         }
 
         public void setData(Wallpaper wallpaper) {
-
+          //  Log.d(Constant.TAG, "setData: "+new Gson().toJson(wallpaper));
             Glide.with(context)
                     .load(Uri.parse(wallpaper.getPortrait()))
                     .thumbnail(Glide // this thumbnail request has to have the same RESULT cache key
