@@ -82,4 +82,11 @@ public class WallpaperViewModel extends AndroidViewModel {
         return wallpaperPagedList;
     }
 
+    public MutableLiveData<String> getSearchLiveData() {
+        return searchLiveData;
+    }
+
+    public void setSearchLiveData(MutableLiveData<String> searchLiveData) {
+        this.searchLiveData = searchLiveData;
+    }
 }

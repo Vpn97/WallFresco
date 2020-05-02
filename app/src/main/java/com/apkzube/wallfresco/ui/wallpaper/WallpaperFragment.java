@@ -87,11 +87,11 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
     public void onCheckedChanged(ChipGroup chipGroup, int chipId) {
 
         if (chipId == View.NO_ID) {
-            model.setSearch("");
+            model.getSearchLiveData().setValue("");
         }else{
             Chip currentChip = chipGroup.findViewById(chipId);
             String currentChipText = String.valueOf(currentChip.getText());
-            model.setSearch(currentChipText);
+            model.getSearchLiveData().setValue(currentChipText);
         }
     }
 
