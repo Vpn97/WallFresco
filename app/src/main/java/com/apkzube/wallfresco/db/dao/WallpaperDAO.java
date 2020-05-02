@@ -32,7 +32,7 @@ public interface WallpaperDAO {
     public LiveData<List<Wallpaper>> getAllWallpaper();
 
 
-    @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND CAST(width AS INT) < CAST(height AS INT) order by created_date")
+    @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND category is null order by created_date")
     public DataSource.Factory<Integer,Wallpaper> getAllPagedWallpaper();
 
 

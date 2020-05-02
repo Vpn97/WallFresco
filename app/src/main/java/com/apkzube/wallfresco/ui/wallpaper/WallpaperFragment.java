@@ -90,10 +90,9 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
         mBinding.wallpaperFragmentLoading.setVisibility(View.VISIBLE);
         if (chipId == View.NO_ID) {
             model.getSearchLiveData().setValue("");
-
         }else{
             Chip currentChip = chipGroup.findViewById(chipId);
-            String currentChipText = String.valueOf(currentChip.getText());
+            String currentChipText = currentChip.getText() +" Wallpaper";
             model.getSearchLiveData().setValue(currentChipText);
         }
     }

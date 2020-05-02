@@ -34,7 +34,7 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
     public WallpaperBoundaryCallback(WallRepository repository, PexelsService service, String searchString) {
         this.repository = repository;
         this.service = service;
-        this.searchString=searchString;
+        this.searchString = searchString;
     }
 
 
@@ -52,9 +52,10 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
 
 
     public void loadData() {
-
+        boolean isRandomSearch = false;
         Call<PelexsResponse> call;
         if (searchString == null || TextUtils.isEmpty(searchString)) {
+            isRandomSearch = true;
             searchString = CommonRestURL.getRandomSearch();
         }
         call = service.getWallpapers(CommonRestURL.getApiKEY(),
@@ -62,13 +63,18 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
                 CommonRestURL.PER_PAGE_WALLPAPER,
                 CommonRestURL.getRandomPage(), "portrait");
 
+        boolean finalIsRandomSearch = isRandomSearch;
         call.enqueue(new Callback<PelexsResponse>() {
             @Override
             public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
                 Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
-
+                ArrayList<Wallpaper> wallpapers;
                 if (null != response && null != response.body()) {
-                    ArrayList<Wallpaper> wallpapers = ConverterUtil.setWallpaperCategory(ConverterUtil.convertResponseToEntityList(response.body()), searchString);
+                    if (finalIsRandomSearch) {
+                        wallpapers = ConverterUtil.convertResponseToEntityList(response.body());
+                    } else {
+                        wallpapers = ConverterUtil.setWallpaperCategory(ConverterUtil.convertResponseToEntityList(response.body()), searchString);
+                    }
                     repository.insertAllWallpapers(wallpapers);
                 }
             }

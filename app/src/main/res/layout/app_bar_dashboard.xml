@@ -38,6 +38,7 @@
             android:layout_gravity="bottom"
             android:background="#ffffff"
             android:theme="@style/ThemeOverlay.Shrine.BottomNavigation"
+            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:menu="@menu/bottom_nav_menu" />
 
 
