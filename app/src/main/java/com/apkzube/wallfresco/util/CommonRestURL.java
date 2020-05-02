@@ -41,6 +41,7 @@ public class CommonRestURL {
             "Nature",
             "Sky",
             "Mountain",
+            "Travel",
             "Army",
             "Beach",
             "Bikes & Motorcycle",
@@ -69,7 +70,7 @@ public class CommonRestURL {
 
     public static int getRandomPage() {
         Random random = new Random();
-        return random.nextInt(9) + 1;
+        return random.nextInt(19) + 1;
     }
 
 }

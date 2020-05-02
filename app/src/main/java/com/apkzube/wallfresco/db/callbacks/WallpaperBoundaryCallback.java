@@ -1,5 +1,6 @@
 package com.apkzube.wallfresco.db.callbacks;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -28,10 +29,12 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
 
     private WallRepository repository;
     private PexelsService service;
+    private String searchString;
 
-    public WallpaperBoundaryCallback(WallRepository repository, PexelsService service) {
+    public WallpaperBoundaryCallback(WallRepository repository, PexelsService service,String searchString) {
         this.repository = repository;
         this.service = service;
+        this.searchString=searchString;
     }
 
 
@@ -48,23 +51,37 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
     }
 
 
-    public void loadData(){
-        service.getWallpapers(CommonRestURL.getApiKEY(), CommonRestURL.getRandomSearch(), CommonRestURL.PER_PAGE_WALLPAPER, CommonRestURL.getRandomPage(), "portrait")
-                .enqueue(new Callback<PelexsResponse>() {
-                    @Override
-                    public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
-                        Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
+    public void loadData() {
+        Call<PelexsResponse> call;
+        if (searchString == null || TextUtils.isEmpty(searchString)) {
+            searchString=CommonRestURL.getRandomSearch();
+            call = service.getWallpapers(CommonRestURL.getApiKEY(),
+                    searchString,
+                    CommonRestURL.PER_PAGE_WALLPAPER,
+                    CommonRestURL.getRandomPage(), "portrait");
+        } else {
+            call = service.getWallpapers(CommonRestURL.getApiKEY(),
+                    searchString,
+                    CommonRestURL.PER_PAGE_WALLPAPER,
+                    CommonRestURL.getRandomPage(),
+                    "portrait");
+        }
+        call.enqueue(new Callback<PelexsResponse>() {
+            @Override
+            public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
+                Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
 
-                        if (null != response && null != response.body()) {
-                            ArrayList<Wallpaper> wallpapers = ConverterUtil.convertResponseToEntityList(response.body());
-                            repository.insertAllWallpapers(wallpapers);
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<PelexsResponse> call, Throwable t) {
-                        Log.d(Constant.TAG, "onFailure: " + new Gson().toJson(t));
-                        loadData();
-                    }
-                });
+                if (null != response && null != response.body()) {
+                    ArrayList<Wallpaper> wallpapers =ConverterUtil.setWallpaperCategory(ConverterUtil.convertResponseToEntityList(response.body()),searchString);
+                    repository.insertAllWallpapers(wallpapers);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PelexsResponse> call, Throwable t) {
+                Log.d(Constant.TAG, "onFailure: " + new Gson().toJson(t));
+                loadData();
+            }
+        });
     }
 }

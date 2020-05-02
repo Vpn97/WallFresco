@@ -42,12 +42,12 @@ public class WallRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-               wallpaperDAO.insertAllWallpaper(wallpapers);
+                wallpaperDAO.insertAllWallpaper(wallpapers);
             }
         });
     }
 
-    public void updateWallpaper(Wallpaper wallpaper){
+    public void updateWallpaper(Wallpaper wallpaper) {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
             @Override
@@ -57,7 +57,7 @@ public class WallRepository {
         });
     }
 
-    public void deleteWallpaper(Wallpaper wallpaper){
+    public void deleteWallpaper(Wallpaper wallpaper) {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
             @Override
@@ -67,39 +67,44 @@ public class WallRepository {
         });
     }
 
-    public LiveData<List<Wallpaper>> getAllWallpaper(){
+    public LiveData<List<Wallpaper>> getAllWallpaper() {
         return wallpaperDAO.getAllWallpaper();
     }
 
-    public LiveData<List<Wallpaper>> getPortraitWallpapers(){
+    public LiveData<List<Wallpaper>> getPortraitWallpapers() {
         return wallpaperDAO.getPortraitWallpapers();
     }
 
-    public LiveData<List<Wallpaper>> getLimitedWallpapers(int mLimit){
+    public LiveData<List<Wallpaper>> getLimitedWallpapers(int mLimit) {
         return wallpaperDAO.getWallpapers(mLimit);
     }
 
-    public LiveData<List<Wallpaper>> getCategoryWallpapers(String category){
+    public DataSource.Factory<Integer, Wallpaper> getCategoryWallpapers(String category) {
         return wallpaperDAO.getCategoryWallpapers(category);
     }
 
-    public LiveData<List<Wallpaper>> getFavoriteWallpapers(){
+    public LiveData<List<Wallpaper>> getFavoriteWallpapers() {
         return wallpaperDAO.getFavoriteWallpapers();
     }
 
-    public LiveData<List<Wallpaper>> getDownloadedWallpapers(){
+    public LiveData<List<Wallpaper>> getDownloadedWallpapers() {
         return wallpaperDAO.getDownloadedWallpapers();
     }
 
-    public LiveData<Wallpaper> getWallpaper(String wallpaperId){
-       return wallpaperDAO.getWallpaper(wallpaperId);
+    public LiveData<Wallpaper> getWallpaper(String wallpaperId) {
+        return wallpaperDAO.getWallpaper(wallpaperId);
     }
 
-    public LiveData<List<Wallpaper>> getTrendWallpapers(){
+    public LiveData<List<Wallpaper>> getTrendWallpapers() {
         return wallpaperDAO.getTrendWallpapers();
     }
 
-    public DataSource.Factory<Integer, Wallpaper> getAllPagedWallpaper() {
-        return wallpaperDAO.getAllPagedWallpaper();
+    public DataSource.Factory<Integer, Wallpaper> getAllPagedWallpaper(String search) {
+
+        if (search == null || search.equalsIgnoreCase("")) {
+            return wallpaperDAO.getAllPagedWallpaper();
+        } else {
+            return wallpaperDAO.getCategoryWallpapers(search);
+        }
     }
 }

@@ -86,23 +86,13 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
     @Override
     public void onCheckedChanged(ChipGroup chipGroup, int chipId) {
 
-       /* wallpapers.clear();
-        if(currentChipText!=null || !TextUtils.isEmpty(currentChipText)) {
-            model.getCategoryWallpaper(currentChipText).removeObservers(getViewLifecycleOwner());
-        }
-
         if (chipId == View.NO_ID) {
-            model.getAllWallpaper().observe(getViewLifecycleOwner(),mainWallpaperObserver);
+            model.setSearch("");
         }else{
-            model.getAllWallpaper().removeObservers(getViewLifecycleOwner());
-            mBinding.wallpaperFragmentLoading.setVisibility(View.VISIBLE);
-            currentChip = chipGroup.findViewById(chipId);
-            currentChipText = String.valueOf(currentChip.getText());
-            model.getCategoryWallpaperWeb(currentChipText,1);
-            wallpapers.clear();
-            adapter.notifyDataSetChanged();
-            model.getCategoryWallpaper(currentChipText).observe(getViewLifecycleOwner(), this::updateAdapter);
-        }*/
+            Chip currentChip = chipGroup.findViewById(chipId);
+            String currentChipText = String.valueOf(currentChip.getText());
+            model.setSearch(currentChipText);
+        }
     }
 
 }

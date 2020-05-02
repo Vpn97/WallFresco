@@ -25,13 +25,15 @@ public class WallpaperViewModel extends AndroidViewModel{
     private WallRepository repository;
     private Executor executor;
     private LiveData<PagedList<Wallpaper>> wallpaperPagedList;
+    private String search;
 
     public WallpaperViewModel(@NonNull Application application) {
         super(application);
         this.application=application;
+        this.search=null;
         repository=new WallRepository(application);
         PexelsService service= PexelsServiceImpl.getService();
-        DataSource.Factory<Integer,Wallpaper> factory=repository.getAllPagedWallpaper();
+        DataSource.Factory<Integer,Wallpaper> factory=repository.getAllPagedWallpaper(search);
 
         PagedList.Config config=(new PagedList.Config.Builder())
                 .setEnablePlaceholders(true)
@@ -40,7 +42,7 @@ public class WallpaperViewModel extends AndroidViewModel{
                 .setPrefetchDistance(4)
                 .build();
 
-        WallpaperBoundaryCallback boundaryCallback=new WallpaperBoundaryCallback(repository,service);
+        WallpaperBoundaryCallback boundaryCallback=new WallpaperBoundaryCallback(repository,service,search);
 
         executor=Executors.newFixedThreadPool(5);
         wallpaperPagedList= (new LivePagedListBuilder<Integer,Wallpaper>(factory,config))
@@ -63,4 +65,11 @@ public class WallpaperViewModel extends AndroidViewModel{
         return wallpaperPagedList;
     }
 
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
 }

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -89,6 +90,8 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard);
 
+        //-----------------------------------------------------------
+
         /*AppBarConfiguration appBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.bottom_menu_wallpaper, R.id.bottom_menu_trend, R.id.bottom_menu_favorite)
                 .build();
@@ -109,7 +112,7 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         fragmentManager.beginTransaction().add(R.id.rootFram, trendingFragment, "trending").hide(trendingFragment).commit();
         fragmentManager.beginTransaction().add(R.id.rootFram, wallpaperFragment, "wallpaper").commit();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = mBinding.appBarDashboard.toolbar;
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mBinding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -119,16 +122,17 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
 
         //set Snack bar for Internet Connection
         snack = Snackbar.make(mBinding.appBarDashboard.conLayout, getString(R.string.no_internet_msg), Snackbar.LENGTH_INDEFINITE);
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
-                snack.getView().getLayoutParams();
+
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snack.getView().getLayoutParams();
         params.setAnchorId(bottomNavigationView.getId());
         params.anchorGravity = Gravity.TOP;
         params.gravity = Gravity.TOP;
+        params.width= ViewGroup.LayoutParams.MATCH_PARENT;
         snack.getView().setLayoutParams(params);
+        snack.getView().setPadding(0,0,0,0);
         snack.setTextColor(getResources().getColor(android.R.color.white));
-        snack.getView().setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        networkReceiver = new NetworkReceiver( this);
+        networkReceiver = new NetworkReceiver(this);
         try {
             broadcastIntent();
         } catch (Exception e) {
@@ -181,14 +185,14 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
     }
 
     private void takePermission() {
-        //check Bulid version
+        //check Build version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(Dashboard.this, permissions[0]) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(Dashboard.this, permissions[1]) != PackageManager.PERMISSION_GRANTED) {
                 //permission is not granted need to get permission
                 this.requestPermissions(permissions, REQUEST_CODE);
             } else {
-                //Permition Already Granted
+                //Permission Already Granted
                 isPermissionGranted = true;
 
             }
@@ -289,7 +293,9 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
             if (snack.isShown()) {
                 snack.setText("online now");
                 snack.getView().setBackgroundColor(getResources().getColor(R.color.green));
-                (new Handler()).postDelayed(()->{snack.dismiss();}, 3000);
+                (new Handler()).postDelayed(() -> {
+                    snack.dismiss();
+                }, 3000);
 
                 Log.d(Constant.TAG, "updateUI: dismiss");
             }

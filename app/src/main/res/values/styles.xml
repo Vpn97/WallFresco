@@ -19,6 +19,7 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m" tools:ignore="NewApi">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
+
     </style>
 
 
@@ -46,5 +47,7 @@
         <item name="colorPrimary">?attr/colorAccent</item>
         <item name="android:fontFamily">@font/font</item>
     </style>
+
+
 
 </resources>

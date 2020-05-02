@@ -21,4 +21,5 @@
     <color name="dialog_backgroud_color">#94000000</color>
     <color name="green">#209C25</color>
     <color name="red">#FF1744</color>
+    <color name="surface_color">#121212</color>
 </resources>
