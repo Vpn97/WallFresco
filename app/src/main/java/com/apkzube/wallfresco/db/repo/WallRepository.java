@@ -99,12 +99,7 @@ public class WallRepository {
         return wallpaperDAO.getTrendWallpapers();
     }
 
-    public DataSource.Factory<Integer, Wallpaper> getAllPagedWallpaper(String search) {
-
-        if (search == null || search.equalsIgnoreCase("")) {
+    public DataSource.Factory<Integer, Wallpaper> getAllPagedWallpaper() {
             return wallpaperDAO.getAllPagedWallpaper();
-        } else {
-            return wallpaperDAO.getCategoryWallpapers(search);
-        }
     }
 }
