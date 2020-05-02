@@ -64,10 +64,12 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
 
     private void setEvent() {
         chipsCategory.setOnCheckedChangeListener(this);
-
+        model.getSearchLiveData().setValue("");
         //new pagination
         model.getWallpaperPagedList().observe(getViewLifecycleOwner(), wallpaperLiveData -> {
+            if(wallpaperLiveData.size()!=0){
                 mBinding.wallpaperFragmentLoading.setVisibility(View.GONE);
+            }
                 wallpaperPagedList=wallpaperLiveData;
                 pagedAdapter.submitList(wallpaperPagedList);
 
@@ -85,9 +87,10 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
 
     @Override
     public void onCheckedChanged(ChipGroup chipGroup, int chipId) {
-
+        mBinding.wallpaperFragmentLoading.setVisibility(View.VISIBLE);
         if (chipId == View.NO_ID) {
             model.getSearchLiveData().setValue("");
+
         }else{
             Chip currentChip = chipGroup.findViewById(chipId);
             String currentChipText = String.valueOf(currentChip.getText());

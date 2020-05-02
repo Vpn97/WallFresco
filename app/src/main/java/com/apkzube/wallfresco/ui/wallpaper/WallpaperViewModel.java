@@ -40,7 +40,7 @@ public class WallpaperViewModel extends AndroidViewModel {
         this.repository = new WallRepository(application);
         this.service = PexelsServiceImpl.getService();
         this.factory = repository.getAllPagedWallpaper();
-        //this.searchFactory = repository.getCategoryWallpapers(search);
+
         this.executor = Executors.newFixedThreadPool(5);
         this.config = (new PagedList.Config.Builder())
                 .setEnablePlaceholders(true)
@@ -60,7 +60,8 @@ public class WallpaperViewModel extends AndroidViewModel {
                         .build();
             }else{
                 WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service,input);
-                return (new LivePagedListBuilder<Integer, Wallpaper>(factory, config))
+                this.searchFactory = repository.getCategoryWallpapers(input);
+                return (new LivePagedListBuilder<Integer, Wallpaper>(searchFactory, config))
                         .setFetchExecutor(executor)
                         .setBoundaryCallback(boundaryCallback)
                         .build();

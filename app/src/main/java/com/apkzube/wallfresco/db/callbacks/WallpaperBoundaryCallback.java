@@ -34,6 +34,7 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
     public WallpaperBoundaryCallback(WallRepository repository, PexelsService service, String searchString) {
         this.repository = repository;
         this.service = service;
+        this.searchString=searchString;
     }
 
 

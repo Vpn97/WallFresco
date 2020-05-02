@@ -32,7 +32,7 @@ public interface WallpaperDAO {
     public LiveData<List<Wallpaper>> getAllWallpaper();
 
 
-    @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND category is null order by created_date")
+    @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND CAST(width AS INT) < CAST(height AS INT) order by created_date")
     public DataSource.Factory<Integer,Wallpaper> getAllPagedWallpaper();
 
 
@@ -52,7 +52,7 @@ public interface WallpaperDAO {
     @Query("SELECT * FROM wallpaper_mst WHERE is_downloaded= 1")
     public LiveData<List<Wallpaper>> getDownloadedWallpapers();
 
-    @Query("SELECT * FROM wallpaper_mst WHERE category like :category")
+    @Query("SELECT * FROM wallpaper_mst WHERE category ==:category")
     public DataSource.Factory<Integer,Wallpaper> getCategoryWallpapers(String category);
 
     @Query("SELECT * FROM wallpaper_mst limit :mLimit")
