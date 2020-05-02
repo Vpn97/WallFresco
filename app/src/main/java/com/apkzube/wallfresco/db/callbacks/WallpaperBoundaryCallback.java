@@ -31,7 +31,7 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
     private PexelsService service;
     private String searchString;
 
-    public WallpaperBoundaryCallback(WallRepository repository, PexelsService service) {
+    public WallpaperBoundaryCallback(WallRepository repository, PexelsService service, String searchString) {
         this.repository = repository;
         this.service = service;
     }
@@ -51,6 +51,7 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
 
 
     public void loadData() {
+
         Call<PelexsResponse> call;
         if (searchString == null || TextUtils.isEmpty(searchString)) {
             searchString = CommonRestURL.getRandomSearch();

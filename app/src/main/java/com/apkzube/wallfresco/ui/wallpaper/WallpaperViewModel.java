@@ -49,18 +49,17 @@ public class WallpaperViewModel extends AndroidViewModel {
                 .setPrefetchDistance(4)
                 .build();
 
-        WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service);
-
-        wallpaperPagedList =
 
 
         wallpaperPagedList= Transformations.switchMap(searchLiveData,input -> {
             if(input==null || TextUtils.isEmpty(input)){
+                WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service,input);
                 return (new LivePagedListBuilder<Integer, Wallpaper>(factory, config))
                         .setFetchExecutor(executor)
                         .setBoundaryCallback(boundaryCallback)
                         .build();
             }else{
+                WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service,input);
                 return (new LivePagedListBuilder<Integer, Wallpaper>(factory, config))
                         .setFetchExecutor(executor)
                         .setBoundaryCallback(boundaryCallback)
