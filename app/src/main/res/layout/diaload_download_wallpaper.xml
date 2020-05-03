@@ -1,13 +1,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/consDismiss"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dialog_backgroud_color">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/crdView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -20,7 +18,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/fragment_history_menu_bottom"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:background="#ffffff"

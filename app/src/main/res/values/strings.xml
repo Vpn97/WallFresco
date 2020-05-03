@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Wall Fresco</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -13,12 +10,9 @@
 
 
     <!--nav menus-->
-    <string name="nav_menu_stickers_app">Stickers App</string>
     <string name="nav_menu_about_app">About App | Discalaimar</string>
     <string name="nev_menu_contact_us">Contact Us</string>
-    <string name="favorite_list">favorite_list</string>
     <string name="privacy_policy_path">file:///android_asset/wallpaper_privacy_policy.htm</string>
-    <string name="uri_opern_source">https://4kwallpaperzubedev.blogspot.com/2019/05/open-source.html</string>
     <string name="uri_privacy_policy">https://4kwallpaperzubedev.blogspot.com/2019/05/4k-wallpaper-privacy-policy.html</string>
     <string name="nav_share_app">Share this App</string>
     <string name="nav_menu_rating_app">Rating Us</string>

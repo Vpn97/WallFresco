@@ -27,11 +27,6 @@
     </style>
 
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <style name="PopupMenu" parent="@style/Widget.AppCompat.Light.PopupMenu">
         <item name="overlapAnchor">true</item>
     </style>
