@@ -37,7 +37,6 @@ public class CommonRestURL {
             "Random Wallpaper",
             "Mobile Wallpaper",
             "Hd Wallpaper",
-            "Animal Wallpaper",
             "Nature",
             "Sky",
             "Mountain",
@@ -45,13 +44,9 @@ public class CommonRestURL {
             "Army",
             "Beach",
             "Bikes & Motorcycle",
-            "Brands",
             "Buildings And Architecture",
-            "Brand",
-            "Movies Wallpapers",
-            "Technology Wallpapers",
-            "Girls and Model Wallpapers",
-            "3D Wallpapers",
+            "Girls and Model",
+            "3D Wallpapers","Marvel Super hero","Super Hero","Japanese anime wallpaper",
             "Love Wallpaper",
             "Mixed Wallpapers", "Traditional Wallpaper", "Non-Woven wallpaper", "Black Wallpaper", "AMOLED", "Food", "Flower Wallpaper", "Space Wallpaper"
 

@@ -119,10 +119,14 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
 
         Toolbar toolbar = mBinding.appBarDashboard.toolbar;
         setSupportActionBar(toolbar);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mBinding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mBinding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
         mBinding.navView.setNavigationItemSelectedListener(this);
 
         //set Snack bar for Internet Connection
@@ -359,16 +363,7 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         LayoutInflater inflater = LayoutInflater.from(Dashboard.this);
         final View aboutAppView = inflater.inflate(R.layout.layout_about_app, null);
         builder.setView(aboutAppView);
-
-
         Button btnPrivacyPolicy = aboutAppView.findViewById(R.id.btnPrivacyPolicy);
-        Button btnOpenSource = aboutAppView.findViewById(R.id.btnOpenSource);
-
-        btnOpenSource.setOnClickListener(view -> {
-            builder.create().dismiss();
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.uri_opern_source))));
-        });
-
         btnPrivacyPolicy.setOnClickListener(view -> {
             builder.create().dismiss();
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.uri_privacy_policy))));

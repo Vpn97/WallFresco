@@ -660,7 +660,7 @@ public class SetWallpaper extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            filePath=Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/share_" + mWallpaper.getId() + ".jpeg";
+            filePath=Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name)+File.separator+"Shared"+File.separator + "/share_" + mWallpaper.getId() + ".jpeg";
             folderPath = android.os.Environment.getExternalStorageDirectory().getPath() + File.separator + getString(R.string.app_name)+File.separator+"Shared";
             File downloadFolder = new File(folderPath);
             if (!downloadFolder.exists()) {

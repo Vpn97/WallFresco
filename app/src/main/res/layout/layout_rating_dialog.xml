@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/black_box"
@@ -20,15 +21,13 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/favoriteAmination"
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="300dp"
         android:layout_margin="16dp"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/rating" />
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_feedback"
+        tools:srcCompat="@drawable/ic_feedback" />
 
 
     <TextView

@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activity.Dashboard">
-
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,11 +19,12 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:titleTextColor="@color/colorAccent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:gravity="center"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
+
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,6 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="#ffffff"
+            app:itemIconTint="@drawable/bottom_nav_selector"
+            app:itemTextColor="@drawable/bottom_nav_selector"
             android:theme="@style/ThemeOverlay.Shrine.BottomNavigation"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:menu="@menu/bottom_nav_menu" />
