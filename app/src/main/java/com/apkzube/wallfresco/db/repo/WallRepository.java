@@ -28,43 +28,23 @@ public class WallRepository {
 
     public void insertWallpaper(Wallpaper wallpaper) {
         Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                wallpaperDAO.insertWallpaper(wallpaper);
-            }
-        });
+        executor.execute(() -> wallpaperDAO.insertWallpaper(wallpaper));
     }
 
 
     public void insertAllWallpapers(List<Wallpaper> wallpapers) {
         Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                wallpaperDAO.insertAllWallpaper(wallpapers);
-            }
-        });
+        executor.execute(() -> wallpaperDAO.insertAllWallpaper(wallpapers));
     }
 
     public void updateWallpaper(Wallpaper wallpaper) {
         Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                wallpaperDAO.updateWallpaper(wallpaper);
-            }
-        });
+        executor.execute(() -> wallpaperDAO.updateWallpaper(wallpaper));
     }
 
     public void deleteWallpaper(Wallpaper wallpaper) {
         Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                wallpaperDAO.deleteWallpaper(wallpaper);
-            }
-        });
+        executor.execute(() -> wallpaperDAO.deleteWallpaper(wallpaper));
     }
 
     public LiveData<List<Wallpaper>> getAllWallpaper() {
@@ -101,5 +81,10 @@ public class WallRepository {
 
     public DataSource.Factory<Integer, Wallpaper> getAllPagedWallpaper() {
             return wallpaperDAO.getAllPagedWallpaper();
+    }
+
+    public void deleteAllWallpaper() {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> wallpaperDAO.deleteWallpaper());
     }
 }

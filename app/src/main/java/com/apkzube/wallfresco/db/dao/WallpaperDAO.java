@@ -28,6 +28,9 @@ public interface WallpaperDAO {
     @Delete
     public  void deleteWallpaper(Wallpaper wallpaper);
 
+    @Query("DELETE FROM wallpaper_mst WHERE is_favorite=0")
+    public  void deleteWallpaper();
+
     @Query("SELECT * FROM wallpaper_mst WHERE is_trending=0 AND category is null")
     public LiveData<List<Wallpaper>> getAllWallpaper();
 

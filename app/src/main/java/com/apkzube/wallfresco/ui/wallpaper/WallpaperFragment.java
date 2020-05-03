@@ -92,7 +92,7 @@ public class WallpaperFragment extends Fragment implements ChipGroup.OnCheckedCh
             model.getSearchLiveData().setValue("");
         }else{
             Chip currentChip = chipGroup.findViewById(chipId);
-            String currentChipText = currentChip.getText() +" Wallpaper";
+            String currentChipText = String.valueOf(currentChip.getText());
             model.getSearchLiveData().setValue(currentChipText);
         }
     }

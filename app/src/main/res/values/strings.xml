@@ -51,16 +51,13 @@
     <string name="wallpaper_obj_key">wallpaper_key</string>
 
     <string-array name="wallpaper_category">
-        <item>Abstract</item>
         <item>Animal</item>
         <item>Birds</item>
-        <item>Anime</item>
-        <item>AMOLED</item>
+        <item>Cartoon</item>
         <item>Art</item>
         <item>Aircraft</item>
         <item>Black</item>
         <item>Love</item>
-        <item>Food</item>
         <item>Flowers</item>
         <item>Nature</item>
         <item>Bikes</item>
@@ -69,14 +66,10 @@
         <item>The Earth</item>
         <item>Moon</item>
         <item>Sky</item>
-        <item>Forest</item>
         <item>Technology</item>
         <item>Galaxies</item>
-        <item>Space</item>
         <item>Vector</item>
         <item>Quotes</item>
         <item>Ocean</item>
-        <item>Textures</item>
-        <item>City</item>
     </string-array>
 </resources>

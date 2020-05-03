@@ -38,12 +38,14 @@ import androidx.fragment.app.FragmentManager;
 
 import com.apkzube.wallfresco.R;
 import com.apkzube.wallfresco.databinding.ActivityDashboardBinding;
+import com.apkzube.wallfresco.db.repo.WallRepository;
 import com.apkzube.wallfresco.ui.favorite.FavoriteFragment;
 import com.apkzube.wallfresco.ui.trending.TrendingFragment;
 import com.apkzube.wallfresco.ui.wallpaper.WallpaperFragment;
 import com.apkzube.wallfresco.util.BroadcastListener;
 import com.apkzube.wallfresco.util.Constant;
 import com.apkzube.wallfresco.util.DataStorage;
+import com.apkzube.wallfresco.util.DateUtil;
 import com.apkzube.wallfresco.util.NetworkReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -72,12 +74,15 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         storage = new DataStorage(this, getString(R.string.user_data));
         useCount = (int) storage.read(getString(R.string.user_count_key), DataStorage.INTEGER);
-        if (useCount == 0) {
+        if (useCount == 0)
             useCount = 1;
-            storage.write(getString(R.string.user_count_key), useCount);
-        } else {
+        else
             useCount++;
-            storage.write(getString(R.string.user_count_key), useCount);
+
+        storage.write(getString(R.string.user_count_key), useCount);
+
+        if(DateUtil.isSameDateRequest(storage)){
+            new WallRepository(getApplication()).deleteAllWallpaper();
         }
 
         allocation();
@@ -127,9 +132,9 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         params.setAnchorId(bottomNavigationView.getId());
         params.anchorGravity = Gravity.TOP;
         params.gravity = Gravity.TOP;
-        params.width= ViewGroup.LayoutParams.MATCH_PARENT;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         snack.getView().setLayoutParams(params);
-        snack.getView().setPadding(0,0,0,0);
+        snack.getView().setPadding(0, 0, 0, 0);
         snack.setTextColor(getResources().getColor(android.R.color.white));
 
         networkReceiver = new NetworkReceiver(this);
