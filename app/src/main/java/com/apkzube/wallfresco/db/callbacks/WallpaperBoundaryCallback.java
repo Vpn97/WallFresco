@@ -52,38 +52,59 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
 
 
     public void loadData() {
-        boolean isRandomSearch = false;
         Call<PelexsResponse> call;
         if (searchString == null || TextUtils.isEmpty(searchString)) {
-            isRandomSearch = true;
-            searchString = CommonRestURL.getRandomSearch();
-        }
-        call = service.getWallpapers(CommonRestURL.getApiKEY(),
-                searchString,
-                CommonRestURL.PER_PAGE_WALLPAPER,
-                CommonRestURL.getRandomPage(), "portrait");
+            call = service.getWallpapers(CommonRestURL.getApiKEY(),
+                    CommonRestURL.getRandomSearch(),
+                    CommonRestURL.PER_PAGE_WALLPAPER,
+                    CommonRestURL.getRandomPage(), "portrait");
 
-        boolean finalIsRandomSearch = isRandomSearch;
-        call.enqueue(new Callback<PelexsResponse>() {
-            @Override
-            public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
-                Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
-                ArrayList<Wallpaper> wallpapers;
-                if (null != response && null != response.body()) {
-                    if (finalIsRandomSearch) {
+            call.enqueue(new Callback<PelexsResponse>() {
+                @Override
+                public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
+                    Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
+                    ArrayList<Wallpaper> wallpapers;
+                    if (null != response && null != response.body()) {
                         wallpapers = ConverterUtil.convertResponseToEntityList(response.body());
-                    } else {
-                        wallpapers = ConverterUtil.setWallpaperCategory(ConverterUtil.convertResponseToEntityList(response.body()), searchString);
+                        repository.insertAllWallpapers(wallpapers);
+                        searchString="";
                     }
-                    repository.insertAllWallpapers(wallpapers);
                 }
-            }
 
-            @Override
-            public void onFailure(Call<PelexsResponse> call, Throwable t) {
-                Log.d(Constant.TAG, "onFailure: " + new Gson().toJson(t));
-                loadData();
-            }
-        });
+                @Override
+                public void onFailure(Call<PelexsResponse> call, Throwable t) {
+                    Log.d(Constant.TAG, "onFailure: " + new Gson().toJson(t));
+                    loadData();
+                }
+            });
+
+        }else{
+            call = service.getWallpapers(CommonRestURL.getApiKEY(),
+                   searchString,
+                    CommonRestURL.PER_PAGE_WALLPAPER,
+                    CommonRestURL.getRandomPage(), "portrait");
+
+            call.enqueue(new Callback<PelexsResponse>() {
+                @Override
+                public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
+                    Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
+                    ArrayList<Wallpaper> wallpapers;
+                    if (null != response && null != response.body()) {
+                        wallpapers = ConverterUtil.setWallpaperCategory(ConverterUtil.convertResponseToEntityList(response.body()), searchString);
+                        repository.insertAllWallpapers(wallpapers);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<PelexsResponse> call, Throwable t) {
+                    Log.d(Constant.TAG, "onFailure: " + new Gson().toJson(t));
+                    loadData();
+                }
+            });
+
+        }
+
+
+
     }
 }

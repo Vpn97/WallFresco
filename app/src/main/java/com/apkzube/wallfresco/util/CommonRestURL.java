@@ -37,19 +37,18 @@ public class CommonRestURL {
             "Random Wallpaper",
             "Mobile Wallpaper",
             "Hd Wallpaper",
-            "Nature",
-            "Sky",
-            "Mountain",
-            "Travel",
-            "Army",
-            "Beach",
-            "Bikes & Motorcycle",
-            "Buildings And Architecture",
-            "Girls and Model",
-            "3D Wallpapers","Marvel Super hero","Super Hero","Japanese anime wallpaper",
+            "iPhone Wallpaper",
+            "4k Wallpaper",
+            "Girls and Model Wallpaper",
+            "3D Wallpapers",
+            "Marvel Super hero",
+            "Super Hero",
+            "Japanese anime wallpaper",
             "Love Wallpaper",
-            "Mixed Wallpapers", "Traditional Wallpaper", "Non-Woven wallpaper", "Black Wallpaper", "AMOLED", "Food", "Flower Wallpaper", "Space Wallpaper"
-
+            "Mixed Wallpapers",
+            "Traditional Wallpaper",
+            "Black Wallpaper",
+            "Flower Wallpaper"
     };
 
 
@@ -65,7 +64,7 @@ public class CommonRestURL {
 
     public static int getRandomPage() {
         Random random = new Random();
-        return random.nextInt(19) + 1;
+        return random.nextInt(7) + 1;
     }
 
 }
