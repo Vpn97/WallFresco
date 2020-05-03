@@ -1,14 +1,5 @@
 package com.apkzube.wallfresco.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.FileProvider;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
@@ -24,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,11 +26,18 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.apkzube.wallfresco.R;
@@ -342,6 +339,7 @@ public class SetWallpaper extends AppCompatActivity {
             downloadFileFromURL.execute(downloadURL);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d(TAG, "onDownloadBtnClick: "+e.getMessage());
         }
     }
 
@@ -512,7 +510,14 @@ public class SetWallpaper extends AppCompatActivity {
 
     private void shareWallpaper(final Wallpaper wallpaper) {
 
-        Glide.with(SetWallpaper.this)
+        try {
+            DownloadFileFromURLAndShare  share=new DownloadFileFromURLAndShare();
+            share.execute(wallpaper.getPortrait());
+        } catch (Exception e) {
+            Log.d(TAG, "shareWallpaper: "+e.getMessage());
+        }
+
+       /* Glide.with(SetWallpaper.this)
                 .asBitmap()
                 .load(wallpaper.getOriginal())
                 .into(new SimpleTarget<Bitmap>() {
@@ -524,7 +529,7 @@ public class SetWallpaper extends AppCompatActivity {
                             Uri imgUri = Uri.parse(bitmapPath);
                             String sharingText = getResources().getString(R.string.share_image_text) + "\n\n" + getResources().getString(R.string.app_name) + "  : " + "https://play.google.com/store/apps/details?id=" + getPackageName();
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("*/*");
+                           // shareIntent.setType("/*);
                             shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
                             shareIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
 
@@ -539,7 +544,7 @@ public class SetWallpaper extends AppCompatActivity {
 
                         }
                     }
-                });
+                });*/
     }
 
     class DownloadFileFromURL extends AsyncTask<String, String, String> {
@@ -600,7 +605,7 @@ public class SetWallpaper extends AppCompatActivity {
                 input.close();
 
             } catch (Exception e) {
-                Log.e("ApkZube", "" + e.getMessage());
+                Log.e("ApkZube Exception", "" + e.getMessage());
             }
 
             return null;
@@ -644,6 +649,101 @@ public class SetWallpaper extends AppCompatActivity {
         }
 
     }
+
+
+    //download and share
+    class DownloadFileFromURLAndShare extends AsyncTask<String, String, String> {
+        /**
+         * Before starting background thread
+         * Show Progress Bar Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            filePath=Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/share_" + mWallpaper.getId() + ".jpeg";
+            folderPath = android.os.Environment.getExternalStorageDirectory().getPath() + File.separator + getString(R.string.app_name)+File.separator+"Shared";
+            File downloadFolder = new File(folderPath);
+            if (!downloadFolder.exists()) {
+                downloadFolder.mkdirs();
+            }
+            Log.d(Constant.TAG, "onPreExecute: DownloadFileFromURLAndShare " + downloadFolder.getAbsolutePath());
+        }
+
+        /**
+         * Downloading file in background thread
+         */
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+                // this will be useful so that you can show a tipical 0-100%           progress bar
+                int lenghtOfFile = conection.getContentLength();
+
+                // download the file
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+                // Output stream
+                OutputStream output = new FileOutputStream(filePath);
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+
+                    // writing data to file
+                    output.write(data, 0, count);
+                }
+
+                // flushing output
+                output.flush();
+
+                // closing streams
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("ApkZube Exception", "" + e.getMessage());
+                //Toast.makeText(SetWallpaper.this, "Fail to share file", Toast.LENGTH_SHORT).show();
+            }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(String file_url) {
+            try {
+                Uri imgUri = Uri.parse(filePath);
+                String sharingText = getResources().getString(R.string.share_image_text) + "\n\n" + getResources().getString(R.string.app_name) + "  : " + "https://play.google.com/store/apps/details?id=" + getPackageName();
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("*/*");
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
+
+                progressBar.setVisibility(View.GONE);
+                btnShare.setVisibility(View.VISIBLE);
+                startActivity(Intent.createChooser(shareIntent, "Share Wallpaper.."));
+            } catch (Exception e) {
+                progressBar.setVisibility(View.GONE);
+                btnShare.setVisibility(View.VISIBLE);
+              //  Toast.makeText(SetWallpaper.this, "Fail share wallpaper", Toast.LENGTH_SHORT).show();
+                Log.d(Constant.TAG, "onPostExecute: " + e.getMessage());
+            }finally {
+                filePath="";
+            }
+
+        }
+
+    }
+
 
 
     public void downloadPopupWindow() {

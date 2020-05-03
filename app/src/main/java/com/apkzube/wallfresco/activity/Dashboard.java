@@ -53,7 +53,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BroadcastListener {
 
-    String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_MEDIA_LOCATION};
     public static final Integer REQUEST_CODE = 99;
     private DataStorage storage;
     int useCount;
