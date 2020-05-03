@@ -81,7 +81,7 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
 
         storage.write(getString(R.string.user_count_key), useCount);
 
-        if(DateUtil.isSameDateRequest(storage)){
+        if(!DateUtil.isSameDateRequest(storage)){
             new WallRepository(getApplication()).deleteAllWallpaper();
         }
 
@@ -316,7 +316,6 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         if (useCount % 3 == 0) {
             storage.write(getString(R.string.user_count_key), ++useCount);
             final AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
