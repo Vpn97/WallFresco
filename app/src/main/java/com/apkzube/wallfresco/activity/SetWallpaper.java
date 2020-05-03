@@ -71,7 +71,7 @@ public class SetWallpaper extends AppCompatActivity {
     Wallpaper mWallpaper;
     LottieAnimationView setWallpaperLoading;
     ImageView btnDownload, btnFavorite, btnShare, btnBackPress;
-    FloatingActionButton btnSetwallpaper;
+    FloatingActionButton btnSetWallpaper;
     ConstraintLayout grpSetUp;
     ProgressDialog downloadDialog;
     ProgressBar progressBar;
@@ -116,7 +116,7 @@ public class SetWallpaper extends AppCompatActivity {
         btnDownload = mBinding.btnDownload;
         btnFavorite = mBinding.btnFavorite;
         btnShare = mBinding.btnShare;
-        btnSetwallpaper = mBinding.btnSetwallpaper;
+        btnSetWallpaper = mBinding.btnSetwallpaper;
         imgWallpaper = mBinding.imgSetWallpaper;
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         progressBar = mBinding.progressBar;
@@ -151,7 +151,7 @@ public class SetWallpaper extends AppCompatActivity {
 
 
         // set wallpaper when btnSet click
-        btnSetwallpaper.setOnClickListener(view -> {
+        btnSetWallpaper.setOnClickListener(view -> {
             if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)) {
 
                 progressBar.setVisibility(View.VISIBLE);
