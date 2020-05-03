@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wall Fresco</string>
+    <string name="app_name">WallFresco</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -43,6 +43,7 @@
     <string name="no_internet_msg">No Internet..!!</string>
     <string name="devloper_mail">hexane.labs@gmail.com</string>
     <string name="wallpaper_obj_key">wallpaper_key</string>
+    <string name="devloper_name">HexaneLabs</string>
 
     <string-array name="wallpaper_category">
         <item>Animal</item>
