@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -67,6 +66,7 @@ public class SetWallpaper extends AppCompatActivity {
 
 
     private static final String TAG = "SetWallpaper";
+    private static final int SET_WALLPAPER_CODE = 11;
     ImageView imgWallpaper;
     Wallpaper mWallpaper;
     LottieAnimationView setWallpaperLoading;
@@ -83,6 +83,8 @@ public class SetWallpaper extends AppCompatActivity {
     private PopupWindow window;
 
     private AlertDialog dialogDownload;
+
+    private boolean IS_SHARE_FLAG,IS_SET_WALLPAPER_FLAG;
 
     private ActivitySetWallpaperBinding mBinding;
     private SetWallpaperViewModel model;
@@ -151,7 +153,7 @@ public class SetWallpaper extends AppCompatActivity {
 
 
         // set wallpaper when btnSet click
-        btnSetWallpaper.setOnClickListener(view -> {
+       /* btnSetWallpaper.setOnClickListener(view -> {
             if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)) {
 
                 progressBar.setVisibility(View.VISIBLE);
@@ -182,7 +184,7 @@ public class SetWallpaper extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.d(TAG, "onClick: " + e.getMessage());
                 }
-/*
+*//*
                 Glide.with(SetWallpaper.this)
                         .asBitmap()
                         .load(mWallpaper.getSrc().getOriginal())
@@ -191,13 +193,22 @@ public class SetWallpaper extends AppCompatActivity {
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             }
-                        });*/
+                        });*//*
 
             } else {
                 setCurrentWallpaper();
             }
-        });
+        });*/
 
+
+        btnSetWallpaper.setOnClickListener(v -> {
+            IS_SHARE_FLAG=false;
+            IS_SET_WALLPAPER_FLAG=true;
+            btnShare.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            shareWallpaper(mWallpaper);
+
+        });
 
         imgWallpaper.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -211,6 +222,8 @@ public class SetWallpaper extends AppCompatActivity {
         btnBackPress.setOnClickListener(view -> onBackPressed());
 
         btnShare.setOnClickListener(view -> {
+            IS_SHARE_FLAG=true;
+            IS_SET_WALLPAPER_FLAG=false;
             btnShare.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             shareWallpaper(mWallpaper);
@@ -230,73 +243,9 @@ public class SetWallpaper extends AppCompatActivity {
             vibrator.vibrate(50);
         });
 
-     /*   btnDownload.setOnClickListener(view -> {
-            final PopupMenu menu = new PopupMenu(getApplicationContext(), btnDownload, Gravity.NO_GRAVITY);
-            menu.getMenuInflater().inflate(R.menu.download_menu, menu.getMenu());
-            menu.show();
 
-            final DownloadFileFromURL downloadFileFromURL = new DownloadFileFromURL();
-            menu.setOnMenuItemClickListener(menuItem -> {
-                String downloadURL = mWallpaper.getOriginal();
-                try {
-                    switch (menuItem.getItemId()) {
-                        case R.id.original:
-                            downloadURL = mWallpaper.getOriginal();
-                            filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/original_" + mWallpaper.getId() + ".jpeg";
-                            break;
-                        case R.id.medium:
-                            downloadURL = mWallpaper.getLarge();
-                            filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/medium_" + mWallpaper.getId() + ".jpeg";
-                            break;
-                        case R.id.large:
-                            downloadURL = mWallpaper.getLarge2x();
-                            filePath = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name) + "/large_" + mWallpaper.getId() + ".jpeg";
-                            break;
-                    }
-                    menu.dismiss();
-                    downloadDialog = new ProgressDialog(SetWallpaper.this);
-                    downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    downloadDialog.setCancelable(false);
-                    downloadDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL", (dialogInterface, i) -> {
-                        if (!downloadFileFromURL.isCancelled()) {
-                            downloadFileFromURL.cancel(true);
-                            if (downloadDialog.isShowing())
-                                downloadDialog.dismiss();
-                        }
-                    });
-                    downloadDialog.setTitle("Downloading...");
-                    downloadDialog.setMax(100);
-                    downloadFileFromURL.execute(downloadURL);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // downloadDialog.setMessage(wallpaper.getImgFile());
-                return true;
-            });
-        });*/
-
-        //btnDownload.setOnClickListener(view -> downloadWallpaperDialog());
         btnDownload.setOnClickListener(view -> downloadPopupWindow());
 
-    }
-
-
-    public void downloadWallpaperDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(SetWallpaper.this);
-        final View dialogView = LayoutInflater.from(SetWallpaper.this).inflate(R.layout.diaload_download_wallpaper, null);
-        builder.setView(dialogView);
-        final AlertDialog dialogDownload = builder.create();
-        dialogDownload.show();
-        dialogDownload.setCancelable(true);
-
-        LinearLayout btnMedium, btnOriginal, btnLarge;
-        btnMedium = dialogView.findViewById(R.id.btnMedium);
-        btnOriginal = dialogView.findViewById(R.id.btnOriginal);
-        btnLarge = dialogView.findViewById(R.id.btnLarge);
-
-        btnMedium.setOnClickListener(this::onDownloadBtnClick);
-        btnOriginal.setOnClickListener(this::onDownloadBtnClick);
-        btnLarge.setOnClickListener(this::onDownloadBtnClick);
     }
 
 
@@ -396,8 +345,8 @@ public class SetWallpaper extends AppCompatActivity {
 
                                     try {
 
-                                        Bitmap bitmap = getScaledBitmap(mBitmap);
-
+                                        //Bitmap bitmap = getScaledBitmap(mBitmap);
+                                        Bitmap bitmap=mBitmap;
                                         if (mApply == Apply.HOMESCREEN_LOCKSCREEN) {
                                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                                 manager.setBitmap(
@@ -512,39 +461,17 @@ public class SetWallpaper extends AppCompatActivity {
 
         try {
             DownloadFileFromURLAndShare  share=new DownloadFileFromURLAndShare();
-            share.execute(wallpaper.getPortrait());
+            if(IS_SET_WALLPAPER_FLAG){
+                share.execute(wallpaper.getLarge2x());
+            }else if(IS_SHARE_FLAG){
+                share.execute(wallpaper.getPortrait());
+            }else{
+                share.execute(wallpaper.getLarge2x());
+            }
+
         } catch (Exception e) {
             Log.d(TAG, "shareWallpaper: "+e.getMessage());
         }
-
-       /* Glide.with(SetWallpaper.this)
-                .asBitmap()
-                .load(wallpaper.getOriginal())
-                .into(new SimpleTarget<Bitmap>() {
-
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        try {
-                            String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), resource, String.valueOf(wallpaper.getId()), wallpaper.getUrl());
-                            Uri imgUri = Uri.parse(bitmapPath);
-                            String sharingText = getResources().getString(R.string.share_image_text) + "\n\n" + getResources().getString(R.string.app_name) + "  : " + "https://play.google.com/store/apps/details?id=" + getPackageName();
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                           // shareIntent.setType("/*);
-                            shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
-
-                            progressBar.setVisibility(View.GONE);
-                            btnShare.setVisibility(View.VISIBLE);
-                            startActivity(Intent.createChooser(shareIntent, "Share Wallpaper.."));
-                        } catch (Exception e) {
-                            progressBar.setVisibility(View.GONE);
-                            btnShare.setVisibility(View.VISIBLE);
-                            Toast.makeText(SetWallpaper.this, "Fail share wallpaper", Toast.LENGTH_SHORT).show();
-                            Log.d(Constant.TAG, "onResourceReady: " + e.getMessage());
-
-                        }
-                    }
-                });*/
     }
 
     class DownloadFileFromURL extends AsyncTask<String, String, String> {
@@ -660,8 +587,16 @@ public class SetWallpaper extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            filePath=Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name)+File.separator+"Shared"+File.separator + "/share_" + mWallpaper.getId() + ".jpeg";
-            folderPath = android.os.Environment.getExternalStorageDirectory().getPath() + File.separator + getString(R.string.app_name)+File.separator+"Shared";
+            if(IS_SET_WALLPAPER_FLAG){
+                filePath=Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name)+File.separator+"Used Wallpaper"+File.separator + "/wallpaper_" + mWallpaper.getId() + ".jpeg";
+                folderPath = android.os.Environment.getExternalStorageDirectory().getPath() + File.separator + getString(R.string.app_name)+File.separator+"Used Wallpaper";
+            }else if(IS_SHARE_FLAG){
+                filePath=Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name)+File.separator+"Shared"+File.separator + "/share_" + mWallpaper.getId() + ".jpeg";
+                folderPath = android.os.Environment.getExternalStorageDirectory().getPath() + File.separator + getString(R.string.app_name)+File.separator+"Shared";
+            }else{
+                filePath=Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.app_name)+File.separator+"Used Wallpaper"+File.separator + "/wallpaper_" + mWallpaper.getId() + ".jpeg";
+                folderPath = android.os.Environment.getExternalStorageDirectory().getPath() + File.separator + getString(R.string.app_name)+File.separator+"Used Wallpaper";
+            }
             File downloadFolder = new File(folderPath);
             if (!downloadFolder.exists()) {
                 downloadFolder.mkdirs();
@@ -722,15 +657,23 @@ public class SetWallpaper extends AppCompatActivity {
         protected void onPostExecute(String file_url) {
             try {
                 Uri imgUri = Uri.parse(filePath);
-                String sharingText = getResources().getString(R.string.share_image_text) + "\n\n" + getResources().getString(R.string.app_name) + "  : " + "https://play.google.com/store/apps/details?id=" + getPackageName();
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("*/*");
-                shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
-
                 progressBar.setVisibility(View.GONE);
                 btnShare.setVisibility(View.VISIBLE);
-                startActivity(Intent.createChooser(shareIntent, "Share Wallpaper.."));
+                if(IS_SHARE_FLAG) {
+                      String sharingText = getResources().getString(R.string.share_image_text) + "\n\n" + getResources().getString(R.string.app_name) + "  : " + "https://play.google.com/store/apps/details?id=" + getPackageName();
+                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("*/*");
+                     shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+                     shareIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
+                    startActivity(Intent.createChooser(shareIntent, "Share Wallpaper.."));
+                }
+                if(IS_SET_WALLPAPER_FLAG) {
+                    Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.setDataAndType(imgUri, "image/*");
+                    intent.putExtra("mimeType", "image/*");
+                    startActivityForResult(Intent.createChooser(intent, getString(R.string.app_name)+" : set as"),SET_WALLPAPER_CODE);
+                }
             } catch (Exception e) {
                 progressBar.setVisibility(View.GONE);
                 btnShare.setVisibility(View.VISIBLE);
@@ -745,6 +688,13 @@ public class SetWallpaper extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK && requestCode==SET_WALLPAPER_CODE){
+            setSuccessDialog();
+        }
+    }
 
     public void downloadPopupWindow() {
         //Create a View object yourself through inflater
