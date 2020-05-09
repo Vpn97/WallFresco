@@ -10,6 +10,7 @@ public class ConverterUtil {
 
 
     public static Wallpaper convertResponseToEntity(WallpaperResponse response){
+
         Wallpaper wallpaper=new Wallpaper();
         wallpaper.setId(response.getId());
         wallpaper.setWidth(response.getWidth());

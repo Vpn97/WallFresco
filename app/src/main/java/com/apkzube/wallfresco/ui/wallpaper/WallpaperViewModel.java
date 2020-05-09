@@ -43,7 +43,7 @@ public class WallpaperViewModel extends AndroidViewModel {
 
         this.executor = Executors.newFixedThreadPool(5);
         this.config = (new PagedList.Config.Builder())
-                .setEnablePlaceholders(true)
+                .setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(CommonRestURL.PER_PAGE_WALLPAPER)
                 .setPageSize(CommonRestURL.PER_PAGE_WALLPAPER)
                 .setPrefetchDistance(4)
@@ -53,13 +53,13 @@ public class WallpaperViewModel extends AndroidViewModel {
 
         wallpaperPagedList= Transformations.switchMap(searchLiveData,input -> {
             if(input==null || TextUtils.isEmpty(input)){
-                WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service,input);
+                WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service,input,application.getApplicationContext());
                 return (new LivePagedListBuilder<Integer, Wallpaper>(factory, config))
                         .setFetchExecutor(executor)
                         .setBoundaryCallback(boundaryCallback)
                         .build();
             }else{
-                WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service,input);
+                WallpaperBoundaryCallback boundaryCallback = new WallpaperBoundaryCallback(repository, service,input,application.getApplicationContext());
                 this.searchFactory = repository.getCategoryWallpapers(input);
                 return (new LivePagedListBuilder<Integer, Wallpaper>(searchFactory, config))
                         .setFetchExecutor(executor)
