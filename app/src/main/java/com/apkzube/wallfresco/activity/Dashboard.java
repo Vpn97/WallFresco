@@ -226,7 +226,7 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
                         "Download best " + getString(R.string.app_name) + " : https://play.google.com/store/apps/details?id=" + getPackageName() + "\n\n" +
-                                "Love 4K Wallpapers is a free app that has a large varities of 4K (UHD | Ultra HD) as well as Full HD (High Definition) wallpapers | backgrounds.\n"
+                                getString(R.string.app_name)+" Wallpapers is a free app that has a large varieties of 4K (UHD | Ultra HD) as well as Full HD (High Definition) wallpapers | backgrounds.\n"
                                 + "\n\n" + "follow apkzube.dev on Instagram : https://www.instagram.com/apkzube\n");
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
