@@ -87,18 +87,25 @@ public class WallpaperBoundaryCallback extends PagedList.BoundaryCallback<Wallpa
             call.enqueue(new Callback<PelexsResponse>() {
                 @Override
                 public void onResponse(Call<PelexsResponse> call, Response<PelexsResponse> response) {
-                    Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
-                    ArrayList<Wallpaper> wallpapers;
+                   // Log.d(Constant.TAG, "onResponse: " + new Gson().toJson(response.body()));
+
                     if (null != response && null != response.body()) {
-                        wallpapers = ConverterUtil.setWallpaperCategory(ConverterUtil.convertResponseToEntityList(response.body()), searchString);
-                        repository.insertAllWallpapers(wallpapers);
+
+                        if (null != response.body().getWallpapers() && response.body().getWallpapers().size() > 0) {
+                            ArrayList<Wallpaper> wallpapers = ConverterUtil.setWallpaperCategory(ConverterUtil.convertResponseToEntityList(response.body()), searchString);
+                            repository.insertAllWallpapers(wallpapers);
+                        }else{
+                            loadData();
+                        }
+                    }else{
+                        loadData();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<PelexsResponse> call, Throwable t) {
                     Log.d(Constant.TAG, "onFailure: " + new Gson().toJson(t));
-                    loadData();
+                    //loadData();
                 }
             });
 
