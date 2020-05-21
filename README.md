@@ -4,16 +4,11 @@
 
 
 # Previews
-<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181845_Wall%20Fresco.jpg" width="215" style="padding: 20px"> <img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181856_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> 
-
-<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181913_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> <img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181948_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> 
-<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182015_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> <img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182203_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> 
-
-<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182243_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> <img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182310_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> 
-
+<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181845_Wall%20Fresco.jpg" width="215" style="padding: 20px"><img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181856_Wall%20Fresco.jpg" width="215"  style="padding: 20px">
+<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181913_Wall%20Fresco.jpg" width="215"  style="padding: 20px"><img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-181948_Wall%20Fresco.jpg" width="215"  style="padding: 20px">
+<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182015_Wall%20Fresco.jpg" width="215"  style="padding: 20px"><img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182203_Wall%20Fresco.jpg" width="215"  style="padding: 20px">
+<img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182243_Wall%20Fresco.jpg" width="215"  style="padding: 20px"><img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182310_Wall%20Fresco.jpg" width="215"  style="padding: 20px">
 <img src="https://github.com/Vpn97/WallFresco/blob/master/screenshot/Screenshot_20200503-182320_Wall%20Fresco.jpg" width="215"  style="padding: 20px"> 
-
-
 
 # Features
 * Pexels API based wallpaper
